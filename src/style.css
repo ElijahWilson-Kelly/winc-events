@@ -1,0 +1,64 @@
+:root {
+  --blue-light: #3a6a9e;
+  --blue-primary: #1d334a;
+  --blue-dark: #101f2f;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: var(--blue-primary);
+  border-bottom: 4px solid var(--blue-dark);
+  box-shadow: 0px 2px 10px var(--blue-light);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 40px;
+}
+
+.navigation {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.user-setting {
+  border-top: 3px solid #959595;
+  border-bottom: 3px solid #959595;
+  padding: 10px 0;
+  margin: 10px 0;
+}
+
+.side-bar {
+  background-color: #eaeaea;
+}
+
+.event-card {
+  margin: 20px;
+  padding: 10px;
+  border: 2px solid var(--blue-dark);
+  border-radius: 4px;
+  height: 300px;
+}
+
+.new-card {
+  background-color: rgb(229, 229, 229);
+  border: none;
+  color: rgb(101, 101, 101);
+  font-size: 3.2rem;
+  opacity: 0.8;
+}
+
+.new-card:hover {
+  background-color: rgb(229, 229, 229);
+  color: white;
+  cursor: pointer;
+}
+
+.icon-hover-grow:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
