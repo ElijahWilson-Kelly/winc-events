@@ -11,6 +11,7 @@ import { Link, useLoaderData } from "react-router-dom";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 
 import { SearchBar } from "../components/SearchBar";
+import { Categories } from "../components/Categories";
 import { Event } from "../components/Event";
 import { NewEventModal } from "../components/NewEventModal";
 
@@ -59,20 +60,37 @@ export const EventsPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterTerm, setFilterTerm] = useState("");
+  const [filteredCategories, setFilteredCategories] = useState(["sports"]);
 
-  const filteredEvents = eventsData.filter(
+  let filteredEvents = eventsData.filter(
     (event) =>
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (filteredCategories.length > 0) {
+    filteredEvents = filteredEvents.filter((event) =>
+      event.categoryIds.some((id) => {
+        const categoryName = categoriesData.find(
+          (category) => category.id === id
+        ).name;
+        return filteredCategories.includes(categoryName);
+      })
+    );
+  }
+
   return (
     <Grid templateColumns={"80px 1fr 80px"}>
       <Box className="side-bar" />
       <Box>
-        <Heading textAlign={"center"} p={10} size={"3xl"} fontWeight={300}>
+        <Heading textAlign={"center"} p={10} size={"4xl"} fontWeight={200}>
           Events
         </Heading>
         <SearchBar value={searchTerm} setSearchTerm={setSearchTerm} />
+        <Categories
+          categories={categoriesData}
+          setFilteredCategories={setFilteredCategories}
+        />
         <Grid
           templateColumns={[
             "repeat(1,1fr)",

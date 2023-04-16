@@ -23,13 +23,13 @@ export const ChangeUserModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="none" size="full">
       <ModalOverlay />
-      <ModalContent bg="blackAlpha.900">
+      <ModalContent bg="#170826F5">
         <ModalCloseButton color="white" />
         <ModalBody display="flex" justifyContent="center" alignItems="center">
           <Center color="white">
             <Stack gap={10}>
-              <Heading color="white" textAlign="center">
-                Select User:
+              <Heading color="white" textAlign="center" fontWeight={200}>
+                Select User
               </Heading>
               <Flex gap={10} maxWidth={400}>
                 {users.map((user) => {
@@ -41,7 +41,9 @@ export const ChangeUserModal = ({
                       key={user.id}
                       gap={4}
                     >
-                      <Heading size="sml">{user.name}</Heading>
+                      <Heading size="sml" fontWeight={100}>
+                        {user.name}
+                      </Heading>
                       <Image
                         className={isCurrentUser ? "current-user" : ""}
                         src={user.image}

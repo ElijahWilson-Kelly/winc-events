@@ -13,7 +13,7 @@ export const SearchBar = ({ searchTerm, setSearchTerm }) => {
   };
 
   return (
-    <Center>
+    <Center m={4}>
       <InputGroup w={"60%"}>
         <InputLeftElement
           pointerEvents="none"
@@ -25,6 +25,7 @@ export const SearchBar = ({ searchTerm, setSearchTerm }) => {
           placeholder="search"
           variant={"filled"}
           fontSize={"2rem"}
+          fontWeight={200}
           colorScheme="blue"
           onChange={handleChange}
         />
