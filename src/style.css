@@ -2,6 +2,7 @@
   --blue-light: #3a6a9e;
   --blue-primary: #1d334a;
   --blue-dark: #101f2f;
+  --selected-green: #88d188;
 }
 
 * {
@@ -19,6 +20,15 @@ header {
   padding: 40px 40px;
 }
 
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #070d14ee;
+}
+
 .navigation {
   display: flex;
   gap: 20px;
@@ -26,14 +36,24 @@ header {
 }
 
 .user-setting {
-  border-top: 3px solid #959595;
-  border-bottom: 3px solid #959595;
-  padding: 10px 0;
+  border-top: 3px solid #95959522;
+  border-bottom: 3px solid #95959522;
+  padding: 10px 3px;
   margin: 10px 0;
 }
 
+.user-setting:hover {
+  background-color: #1d334a22;
+  cursor: pointer;
+}
+
+.current-user {
+  border: 3px solid var(--selected-green);
+  box-shadow: 0px 0px 20px 1px var(--selected-green);
+}
+
 .side-bar {
-  background-color: #eaeaea;
+  background-color: #d2e3f788;
 }
 
 .event-card {

@@ -1,12 +1,23 @@
-import React from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { BsPersonCircle } from "react-icons/bs";
 import { AiOutlineHome } from "react-icons/ai";
 import { Center, Text, useDisclosure } from "@chakra-ui/react";
-import { UserSettingsModal } from "./UserSettingsModal";
+import { ChangeUserModal } from "./ChangeUserModal";
+import { UserContext } from "./UserContext";
 
 export const Navigation = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [users, setUsers] = useState([]);
+  const { currentUser, setCurrentUser } = useContext(UserContext);
+
+  useEffect(() => {
+    (async () => {
+      const response = await fetch("http://localhost:3000/users");
+      const users = await response.json();
+      setUsers(users);
+    })();
+  }, []);
 
   return (
     <header>
@@ -17,7 +28,7 @@ export const Navigation = () => {
           onClick={onOpen}
         />
 
-        <Text>Jan Bennet</Text>
+        <Text>{currentUser?.name || "Guest"}</Text>
       </Center>
 
       <nav className="navigation">
@@ -28,7 +39,13 @@ export const Navigation = () => {
           <AiOutlineHome size="1.4rem" className="icon-hover-grow" />
         </Link>
       </nav>
-      <UserSettingsModal onClose={onClose} isOpen={isOpen} user="elijah" />
+      <ChangeUserModal
+        onClose={onClose}
+        isOpen={isOpen}
+        users={users}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+      />
     </header>
   );
 };

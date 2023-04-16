@@ -28,7 +28,11 @@ export const Event = ({ event, categoriesData }) => {
             const { name } = categoriesData.find(
               (category) => category.id === id
             );
-            return <Text color={"green.400"}>{name}</Text>;
+            return (
+              <Text color={"green.400"} key={id}>
+                {name}
+              </Text>
+            );
           })}
         </Flex>
         <Text fontSize={"sm"} textAlign={"center"} color="gray.500">
