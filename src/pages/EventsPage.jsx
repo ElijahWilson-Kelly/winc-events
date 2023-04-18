@@ -60,7 +60,6 @@ export const EventsPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
-
   let filteredEvents = eventsData.filter(
     (event) =>
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

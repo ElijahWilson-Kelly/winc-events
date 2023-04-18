@@ -7,9 +7,12 @@ import {
   Flex,
   Stack,
   ButtonGroup,
+  Grid,
 } from "@chakra-ui/react";
 import { useLoaderData, useOutletContext } from "react-router-dom";
 import { UserContext } from "../components/UserContext";
+
+import { CommentsSection } from "../components/CommentSections";
 
 export const loader = async ({ params }) => {
   const response = await fetch(
@@ -23,6 +26,7 @@ export const EventPage = () => {
   const users = useOutletContext();
   const { currentUser } = useContext(UserContext);
   const {
+    id,
     title,
     description,
     image,
@@ -30,6 +34,7 @@ export const EventPage = () => {
     endTime,
     categories,
     createdBy: createdById,
+    comments = [],
   } = useLoaderData();
   const createdByUser = users.find((user) => user.id === createdById);
   const [startTimeFormated, endTimeFormated] = [startTime, endTime].map(
@@ -38,8 +43,8 @@ export const EventPage = () => {
   const createdByCurrentUser = createdById === currentUser?.id;
 
   return (
-    <Flex p={30}>
-      <Stack>
+    <Grid p={30} gap={10} templateColumns={["1fr 2fr"]}>
+      <Stack gap={2}>
         <Heading fontWeight={200} fontSize="3rem">
           {title}
         </Heading>
@@ -50,8 +55,9 @@ export const EventPage = () => {
         <Text>
           {startTimeFormated} - {endTimeFormated}
         </Text>
+        <Heading fontWeight={100}>Created By</Heading>
         <Flex align={"center"} gap={2}>
-          <Text>Created By: {createdByUser?.name || "...loading"}</Text>
+          <Text>{createdByUser?.name || "...loading"}</Text>
           <Image
             src={createdByUser?.image || ""}
             boxSize={"50px"}
@@ -79,6 +85,7 @@ export const EventPage = () => {
           </Text>
         ) : undefined}
       </Stack>
-    </Flex>
+      <CommentsSection commentsFromServer={comments} eventId={id} />
+    </Grid>
   );
 };
