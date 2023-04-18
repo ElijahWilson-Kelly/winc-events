@@ -6,9 +6,8 @@ import { Center, Text, useDisclosure } from "@chakra-ui/react";
 import { ChangeUserModal } from "./ChangeUserModal";
 import { UserContext } from "./UserContext";
 
-export const Navigation = () => {
+export const Navigation = ({ users, setUsers }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [users, setUsers] = useState([]);
   const { currentUser, setCurrentUser } = useContext(UserContext);
 
   useEffect(() => {
@@ -27,14 +26,11 @@ export const Navigation = () => {
           className="icon-hover-grow"
           onClick={onOpen}
         />
-
         <Text>{currentUser?.name || "Guest"}</Text>
       </Center>
 
       <nav className="navigation">
-        <Link to="/">Events</Link>
-
-        <Link to="/event/1">Event</Link>
+        <Link>New Event +</Link>
         <Link to="/">
           <AiOutlineHome size="1.4rem" className="icon-hover-grow" />
         </Link>

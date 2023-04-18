@@ -3,7 +3,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { UserContextProvider } from "./components/UserContext";
-import { EventPage } from "./pages/EventPage";
+import { EventPage, loader as eventPageLoader } from "./pages/EventPage";
 import { EventsPage, loader as eventsPageLoader } from "./pages/EventsPage";
 import {
   SelectUserPage,
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
       {
         path: "/event/:eventId",
         element: <EventPage />,
-        // loader: postLoader,
+        loader: eventPageLoader,
         // action: addComment,
       },
       {

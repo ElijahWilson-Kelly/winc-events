@@ -7,7 +7,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useOutletContext } from "react-router-dom";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 
 import { SearchBar } from "../components/SearchBar";
@@ -59,8 +59,7 @@ export const EventsPage = () => {
   const [eventsData, categoriesData] = useLoaderData();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterTerm, setFilterTerm] = useState("");
-  const [filteredCategories, setFilteredCategories] = useState(["sports"]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
 
   let filteredEvents = eventsData.filter(
     (event) =>

@@ -4,8 +4,10 @@ export const Event = ({ event, categoriesData }) => {
   const maxParagraphLength = 80;
 
   const { title, description, categoryIds } = event;
-  const startTime = new Date(event.startTime).toDateString();
-  const endTime = new Date(event.endTime).toDateString();
+  const startTime = new Date(event.startTime)
+    .toLocaleString("en-GB")
+    .slice(0, -3);
+  const endTime = new Date(event.endTime).toLocaleString("en-GB").slice(0, -3);
   return (
     <Flex
       className="event-card"
