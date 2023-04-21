@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Form, useNavigate } from "react-router-dom";
+import { Form, useOutletContext } from "react-router-dom";
 import {
   Input,
   Textarea,
@@ -9,53 +9,56 @@ import {
   Checkbox,
   FormControl,
   FormLabel,
-  useToast,
 } from "@chakra-ui/react";
 
-export const NewEventForm = ({ categoriesData, onClose }) => {
-  const [formErrors, setFormErrors] = useState({});
-  const toast = useToast();
-  const navigate = useNavigate();
+// Controlled Form
+export const NewEventForm = ({ onClose, formData, onSubmit, id }) => {
+  const categoryOptions = useOutletContext();
+
+  const dateNow = (offsetHours = 0) => {
+    let date = new Date();
+    if (offsetHours != 0) {
+      const milliseconds = date.getTime();
+      date = new Date(milliseconds + offsetHours * 3600000);
+    }
+    const pad = (n) => `${n}`.padStart(2, "0");
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth()) +
+      "-" +
+      pad(date.getDate()) +
+      "T" +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes())
+    );
+  };
+
+  const defaultStartTime = () => dateNow();
+  const defaultEndTime = () => dateNow(2);
+
+  const [title, setTitle] = useState(formData.title || "");
+  const [description, setDescription] = useState(formData.description || "");
+  const [categories, setCategories] = useState(formData.categories || []);
+  const [location, setLocation] = useState(formData.location || "");
+  const [startTime, setStartTime] = useState(
+    formData.startTime || defaultStartTime
+  );
+  const [endTime, setEndTime] = useState(formData.endTime || defaultEndTime);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const body = Object.fromEntries(formData.entries());
-    body.categoryIds = Array.from(formData)
-      .filter((entry) => entry[0] === "categoryIds")
-      .map((entry) => +entry[1]);
-    (async () => {
-      try {
-        const response = await fetch("http://localhost:3000/events/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        });
-        if (response.ok) {
-          toast({
-            title: "Event Created.",
-            description: "Your event has been created.",
-            status: "success",
-            duration: 2000,
-            isClosable: true,
-          });
-          navigate("/");
-          onClose();
-        } else {
-          toast({
-            title: "Error",
-            description: "Sorry we were unable to create your event.",
-            status: "error",
-            duration: 2000,
-            isClosable: true,
-          });
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    })();
+    const formData = {
+      title,
+      description,
+      location,
+      categories,
+      startTime,
+      endTime,
+      id,
+    };
+    onSubmit(formData);
   };
 
   return (
@@ -69,7 +72,12 @@ export const NewEventForm = ({ categoriesData, onClose }) => {
     >
       <FormControl isRequired>
         <FormLabel>Title</FormLabel>
-        <Input placeholder="title" name="title" />
+        <Input
+          placeholder="title"
+          name="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
       </FormControl>
 
       <FormControl isRequired>
@@ -78,18 +86,33 @@ export const NewEventForm = ({ categoriesData, onClose }) => {
           name="description"
           placeholder="description"
           resize={"none"}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         ></Textarea>
       </FormControl>
 
       <FormControl>
         <FormLabel>Categories</FormLabel>
         <Flex gap={10}>
-          {categoriesData.map((category) => {
+          {categoryOptions.map((category) => {
             return (
               <Checkbox
                 key={category.id}
                 value={category.id}
                 name="categoryIds"
+                checked={categories.some((id) => id === category.id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setCategories((prevCategories) => [
+                      ...prevCategories,
+                      category.id,
+                    ]);
+                  } else {
+                    setCategories((prevCategories) =>
+                      prevCategories.filter((id) => id != category.id)
+                    );
+                  }
+                }}
               >
                 {category.name[0].toLowerCase() + category.name.slice(1)}
               </Checkbox>
@@ -100,17 +123,32 @@ export const NewEventForm = ({ categoriesData, onClose }) => {
 
       <FormControl isRequired>
         <FormLabel>Location</FormLabel>
-        <Input name="location" placeholder="location" />
+        <Input
+          name="location"
+          placeholder="location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
       </FormControl>
 
       <FormControl isRequired>
         <FormLabel>Start Time</FormLabel>
-        <Input name="startTime" type="datetime-local" />
+        <Input
+          name="startTime"
+          type="datetime-local"
+          value={startTime}
+          onChange={(e) => setStartTime(e.target.value)}
+        />
       </FormControl>
 
       <FormControl isRequired>
         <FormLabel>End Time</FormLabel>
-        <Input name="endTime" type="datetime-local" />
+        <Input
+          name="endTime"
+          type="datetime-local"
+          value={endTime}
+          onChange={(e) => setEndTime(e.target.value)}
+        />
       </FormControl>
 
       <Flex justify={"space-between"}>

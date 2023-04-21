@@ -4,19 +4,19 @@ import { Navigation } from "./Navigation";
 import { Box } from "@chakra-ui/react";
 
 export const Root = () => {
-  const [users, setUsers] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
   useEffect(() => {
     (async () => {
-      const response = await fetch("http://localhost:3000/users");
-      const users = await response.json();
-      setUsers(users);
+      const response = await fetch("http://localhost:3000/categories");
+      const categories = await response.json();
+      setCategoryOptions(categories);
     })();
   }, []);
 
   return (
     <Box>
-      <Navigation users={users} setUsers={setUsers} />
-      <Outlet context={users} />
+      <Navigation />
+      <Outlet context={categoryOptions} />
     </Box>
   );
 };

@@ -82,3 +82,19 @@ header {
   transform: scale(1.1);
   cursor: pointer;
 }
+
+.delete-btn {
+  color: #00000000;
+}
+
+.comment:hover .delete-btn {
+  color: black;
+}
+
+.comment .delete-btn:hover {
+  color: black;
+}
+
+.disabled {
+  visibility: hidden;
+}

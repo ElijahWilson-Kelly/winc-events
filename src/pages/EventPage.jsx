@@ -8,11 +8,15 @@ import {
   Stack,
   ButtonGroup,
   Grid,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { useLoaderData, useOutletContext } from "react-router-dom";
-import { UserContext } from "../components/UserContext";
+import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
+import { UsersContext } from "../components/UsersContext";
 
 import { CommentsSection } from "../components/CommentSections";
+import { NewEventModal } from "../components/NewEventModal";
+import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
 
 export const loader = async ({ params }) => {
   const response = await fetch(
@@ -23,69 +27,128 @@ export const loader = async ({ params }) => {
 };
 
 export const EventPage = () => {
-  const users = useOutletContext();
-  const { currentUser } = useContext(UserContext);
+  const {
+    isOpen: isOpenForm,
+    onOpen: onOpenForm,
+    onClose: onCloseForm,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenConfirmDelete,
+    onOpen: onOpenConfirmDelete,
+    onClose: onCloseConfirmDelete,
+  } = useDisclosure();
+
+  const navigate = useNavigate();
+  const { currentUser, allUsers } = useContext(UsersContext);
   const {
     id,
     title,
     description,
     image,
+    location,
+    categories,
     startTime,
     endTime,
-    categories,
     createdBy: createdById,
     comments = [],
   } = useLoaderData();
-  const createdByUser = users.find((user) => user.id === createdById);
+
+  const formData = {
+    title,
+    description,
+    categories,
+    location,
+    startTime,
+    endTime,
+  };
+
+  const submitEdittedForm = async (newEventDetails) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/events/${newEventDetails.id}`,
+        {
+          headers: { "Content-Type": "application/json" },
+          method: "PATCH",
+          body: JSON.stringify(newEventDetails),
+        }
+      );
+      onCloseForm();
+      navigate(`/event/${newEventDetails.id}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const createdByUser = allUsers.find((user) => user.id === createdById);
   const [startTimeFormated, endTimeFormated] = [startTime, endTime].map(
     (time) => new Date(time).toLocaleString("en-GB").slice(0, -3)
   );
   const createdByCurrentUser = createdById === currentUser?.id;
 
   return (
-    <Grid p={30} gap={10} templateColumns={["1fr 2fr"]}>
-      <Stack gap={2}>
-        <Heading fontWeight={200} fontSize="3rem">
-          {title}
-        </Heading>
-        <Image src={image} w={"400px"} objectFit="cover" borderRadius={5} />
-        <Heading fontWeight={100}>What?</Heading>
-        <Text>{description}</Text>
-        <Heading fontWeight={100}>When?</Heading>
-        <Text>
-          {startTimeFormated} - {endTimeFormated}
-        </Text>
-        <Heading fontWeight={100}>Created By</Heading>
-        <Flex align={"center"} gap={2}>
-          <Text>{createdByUser?.name || "...loading"}</Text>
-          <Image
-            src={createdByUser?.image || ""}
-            boxSize={"50px"}
-            borderRadius={"50%"}
-            className={createdByCurrentUser ? "current-user" : ""}
-          />
-        </Flex>
-
-        <ButtonGroup isDisabled={!createdByCurrentUser}>
-          <Button
-            colorScheme="green"
-            variant="outline"
-            fontWeight={300}
-            w={100}
-          >
-            Edit
-          </Button>
-          <Button colorScheme="red" variant="outline" fontWeight={300} w={100}>
-            Delete
-          </Button>
-        </ButtonGroup>
-        {!createdByCurrentUser ? (
-          <Text color="purple.500">
-            ! Only the user that created the event can edit and delete event.
+    <>
+      <Grid p={30} gap={10} templateColumns={["1fr 2fr"]}>
+        <Stack gap={2}>
+          <Heading fontWeight={200} fontSize="3rem">
+            {title}
+          </Heading>
+          <Image src={image} w={"400px"} objectFit="cover" borderRadius={5} />
+          <Heading fontWeight={100}>What?</Heading>
+          <Text>{description}</Text>
+          <Heading fontWeight={100}>When?</Heading>
+          <Text>
+            {startTimeFormated} - {endTimeFormated}
           </Text>
-        ) : undefined}
-      </Stack>
-      <CommentsSection commentsFromServer={comments} eventId={id} />
-    </Grid>
+          <Heading fontWeight={100}>Created By</Heading>
+          <Flex align={"center"} gap={2}>
+            <Text>{createdByUser?.name || "...loading"}</Text>
+            <Image
+              src={createdByUser?.image || ""}
+              boxSize={"50px"}
+              borderRadius={"50%"}
+              className={createdByCurrentUser ? "current-user" : ""}
+            />
+          </Flex>
+
+          <ButtonGroup isDisabled={!createdByCurrentUser}>
+            <Button
+              colorScheme="green"
+              variant="outline"
+              fontWeight={300}
+              w={100}
+              onClick={onOpenForm}
+            >
+              Edit
+            </Button>
+            <Button
+              colorScheme="red"
+              variant="outline"
+              fontWeight={300}
+              w={100}
+              onClick={onOpenConfirmDelete}
+            >
+              Delete
+            </Button>
+          </ButtonGroup>
+          {!createdByCurrentUser ? (
+            <Text color="purple.500">
+              ! Only the user that created the event can edit and delete event.
+            </Text>
+          ) : undefined}
+        </Stack>
+        <CommentsSection commentsFromServer={comments} eventId={id} />
+      </Grid>
+      <NewEventModal
+        isOpen={isOpenForm}
+        onClose={onCloseForm}
+        formData={formData}
+        onSubmit={submitEdittedForm}
+        id={id}
+      />
+      <ConfirmDeleteModal
+        isOpen={isOpenConfirmDelete}
+        onClose={onCloseConfirmDelete}
+      />
+    </>
   );
 };

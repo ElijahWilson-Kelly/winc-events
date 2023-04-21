@@ -65,7 +65,6 @@ export const EventsPage = () => {
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   if (filteredCategories.length > 0) {
     filteredEvents = filteredEvents.filter((event) =>
       event.categoryIds.some((id) => {
@@ -76,6 +75,16 @@ export const EventsPage = () => {
       })
     );
   }
+
+  const findNextHighestId = (eventsData) => {
+    let highest = 0;
+    for (const { id } of eventsData) {
+      if (id > highest) {
+        highest = id;
+      }
+    }
+    return highest + 1;
+  };
 
   return (
     <Grid templateColumns={"80px 1fr 80px"}>
@@ -115,6 +124,7 @@ export const EventsPage = () => {
         isOpen={isOpen}
         onClose={onClose}
         categoriesData={categoriesData}
+        id={findNextHighestId(eventsData)}
       />
     </Grid>
   );

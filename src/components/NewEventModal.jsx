@@ -3,13 +3,19 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { NewEventForm } from "./NewEventForm";
 
-export const NewEventModal = ({ isOpen, onClose, categoriesData }) => {
+export const NewEventModal = ({
+  isOpen,
+  onClose,
+  categoriesData,
+  formData = {},
+  onSubmit,
+  id,
+}) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="scale" size="xl">
       <ModalOverlay
@@ -20,7 +26,13 @@ export const NewEventModal = ({ isOpen, onClose, categoriesData }) => {
         <ModalHeader>New Event</ModalHeader>
         <ModalCloseButton color="white" border="1px solid white" />
         <ModalBody>
-          <NewEventForm categoriesData={categoriesData} onClose={onClose} />
+          <NewEventForm
+            categoriesData={categoriesData}
+            formData={formData}
+            onClose={onClose}
+            onSubmit={onSubmit}
+            id={id}
+          />
         </ModalBody>
       </ModalContent>
     </Modal>

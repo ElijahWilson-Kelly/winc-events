@@ -4,19 +4,11 @@ import { BsPersonCircle } from "react-icons/bs";
 import { AiOutlineHome } from "react-icons/ai";
 import { Center, Text, useDisclosure } from "@chakra-ui/react";
 import { ChangeUserModal } from "./ChangeUserModal";
-import { UserContext } from "./UserContext";
+import { UsersContext } from "./UsersContext";
 
-export const Navigation = ({ users, setUsers }) => {
+export const Navigation = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { currentUser, setCurrentUser } = useContext(UserContext);
-
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("http://localhost:3000/users");
-      const users = await response.json();
-      setUsers(users);
-    })();
-  }, []);
+  const { currentUser, setCurrentUser, allUsers } = useContext(UsersContext);
 
   return (
     <header>
@@ -38,7 +30,7 @@ export const Navigation = ({ users, setUsers }) => {
       <ChangeUserModal
         onClose={onClose}
         isOpen={isOpen}
-        users={users}
+        allUsers={allUsers}
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}
       />

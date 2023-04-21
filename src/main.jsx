@@ -2,7 +2,7 @@ import "./style.css";
 import { ChakraProvider } from "@chakra-ui/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { UserContextProvider } from "./components/UserContext";
+import { UsersContextProvider } from "./components/UsersContext";
 import { EventPage, loader as eventPageLoader } from "./pages/EventPage";
 import { EventsPage, loader as eventsPageLoader } from "./pages/EventsPage";
 import {
@@ -39,9 +39,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ChakraProvider>
-      <UserContextProvider>
+      <UsersContextProvider>
         <RouterProvider router={router} />
-      </UserContextProvider>
+      </UsersContextProvider>
     </ChakraProvider>
   </React.StrictMode>
 );

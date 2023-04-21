@@ -10,13 +10,11 @@ import {
   Image,
   Flex,
 } from "@chakra-ui/react";
-import { useResetProjection } from "framer-motion";
-import { useContext } from "react";
 
 export const ChangeUserModal = ({
   isOpen,
   onClose,
-  users,
+  allUsers,
   currentUser,
   setCurrentUser,
 }) => {
@@ -32,7 +30,7 @@ export const ChangeUserModal = ({
                 Select User
               </Heading>
               <Flex gap={10} maxWidth={400}>
-                {users.map((user) => {
+                {allUsers.map((user) => {
                   const isCurrentUser = user.id === currentUser.id;
                   return (
                     <Flex

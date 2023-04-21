@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { Form, useSubmit } from "react-router-dom";
 import { Comment } from "./Comment";
 
-import { UserContext } from "./UserContext";
+import { UsersContext } from "./UsersContext";
 
 // export const action = async ({ request, params }) => {
 //   const body = Object.fromEntries(await request.formData());
@@ -15,7 +15,7 @@ import { UserContext } from "./UserContext";
 
 export const CommentsSection = ({ commentsFromServer, eventId }) => {
   let [comments, setComments] = useState(commentsFromServer);
-  const { currentUser } = useContext(UserContext);
+  const { currentUser } = useContext(UsersContext);
 
   useEffect(() => {
     (async () => {
@@ -36,8 +36,6 @@ export const CommentsSection = ({ commentsFromServer, eventId }) => {
     })();
   }, [comments]);
 
-  const submit = useSubmit();
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -54,6 +52,12 @@ export const CommentsSection = ({ commentsFromServer, eventId }) => {
     e.target.comment.value = "";
   };
 
+  const deleteComment = (id) => {
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment.id != id)
+    );
+  };
+
   return (
     <Stack>
       <Heading fontWeight={100} textAlign={"center"} fontSize={"3rem"}>
@@ -68,7 +72,13 @@ export const CommentsSection = ({ commentsFromServer, eventId }) => {
         boxShadow={"inset 0px 0px 70px 0px #0000FF11"}
       >
         {comments.map((comment) => {
-          return <Comment key={comment.id} comment={comment} />;
+          return (
+            <Comment
+              key={comment.id}
+              comment={comment}
+              deleteComment={deleteComment}
+            />
+          );
         })}
         <Form method="patch" onSubmit={handleSubmit}>
           <Textarea
