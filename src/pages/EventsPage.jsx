@@ -1,19 +1,12 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Center,
-  Grid,
-  Heading,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Center, Grid, Heading, useDisclosure } from "@chakra-ui/react";
 import { Link, useLoaderData, useOutletContext } from "react-router-dom";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 
 import { SearchBar } from "../components/SearchBar";
 import { Categories } from "../components/Categories";
-import { Event } from "../components/Event";
-import { NewEventModal } from "../components/NewEventModal";
+import { EventCard } from "../components/EventCard";
+import { EventFormModal } from "../modals/EventFormModal";
 
 export const loader = async () => {
   try {
@@ -110,7 +103,7 @@ export const EventsPage = () => {
           {filteredEvents.map((event) => {
             return (
               <Link to={`event/${event.id}`} key={event.id}>
-                <Event event={event} categoriesData={categoriesData} />
+                <EventCard event={event} categoriesData={categoriesData} />
               </Link>
             );
           })}
@@ -120,7 +113,7 @@ export const EventsPage = () => {
         </Grid>
       </Box>
       <Box className="side-bar" />
-      <NewEventModal
+      <EventFormModal
         isOpen={isOpen}
         onClose={onClose}
         categoriesData={categoriesData}

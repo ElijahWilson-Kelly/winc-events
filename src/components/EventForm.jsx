@@ -12,8 +12,8 @@ import {
 } from "@chakra-ui/react";
 
 // Controlled Form
-export const NewEventForm = ({ onClose, formData, onSubmit, id }) => {
-  const categoryOptions = useOutletContext();
+export const EventForm = ({ onClose, formData, onSubmit, id }) => {
+  const { categoryOptions } = useOutletContext();
 
   const dateNow = (offsetHours = 0) => {
     let date = new Date();

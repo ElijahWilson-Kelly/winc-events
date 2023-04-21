@@ -10,9 +10,9 @@ import {
   ButtonGroup,
 } from "@chakra-ui/react";
 
-export const ConfirmDeleteModal = ({ isOpen, onClose }) => {
+export const ConfirmDeleteModal = ({ isOpen, onClose, deleteEvent }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} motionPreset="scale">
+    <Modal isOpen={isOpen} onClose={onClose} motionPreset="scale" isCentered>
       <ModalOverlay
         bg="blackAlpha.800"
         backdropFilter="blur(1px) hue-rotate(10deg)"
@@ -24,8 +24,10 @@ export const ConfirmDeleteModal = ({ isOpen, onClose }) => {
           <Text>Are you sure this cannot be undone!</Text>
         </ModalBody>
         <ButtonGroup justifyContent={"space-between"} p={4}>
-          <Button colorScheme="red">Delete</Button>
-          <Button colorScheme="green" variant="ghost" onClick={onClose}>
+          <Button colorScheme="red" onClick={deleteEvent}>
+            Delete
+          </Button>
+          <Button colorScheme="blue" variant="ghost" onClick={onClose}>
             Cancel
           </Button>
         </ButtonGroup>

@@ -1,11 +1,7 @@
 import { Box, Text, Heading, Flex } from "@chakra-ui/react";
 
-export const Event = ({ event, categoriesData }) => {
+export const EventCard = ({ event, categoriesData }) => {
   const maxParagraphLength = 80;
-
-  if (!event.title) {
-    console.log(event);
-  }
 
   const { title, description, categoryIds } = event;
   const startTime = new Date(event.startTime)

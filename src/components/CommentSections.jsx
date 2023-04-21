@@ -69,7 +69,7 @@ export const CommentsSection = ({ commentsFromServer, eventId }) => {
         borderColor="blue.900"
         borderRadius={10}
         p={10}
-        boxShadow={"inset 0px 0px 70px 0px #0000FF11"}
+        boxShadow={"inset 0px 0px 2px 0px black"}
       >
         {comments.map((comment) => {
           return (

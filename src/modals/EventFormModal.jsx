@@ -6,9 +6,9 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import { NewEventForm } from "./NewEventForm";
+import { EventForm } from "../components/EventForm";
 
-export const NewEventModal = ({
+export const EventFormModal = ({
   isOpen,
   onClose,
   categoriesData,
@@ -26,7 +26,7 @@ export const NewEventModal = ({
         <ModalHeader>New Event</ModalHeader>
         <ModalCloseButton color="white" border="1px solid white" />
         <ModalBody>
-          <NewEventForm
+          <EventForm
             categoriesData={categoriesData}
             formData={formData}
             onClose={onClose}

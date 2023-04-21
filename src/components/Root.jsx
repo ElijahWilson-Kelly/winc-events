@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { Navigation } from "./Navigation";
-import { Box } from "@chakra-ui/react";
+import { Box, useToast } from "@chakra-ui/react";
 
 export const Root = () => {
   const [categoryOptions, setCategoryOptions] = useState([]);
@@ -16,7 +16,7 @@ export const Root = () => {
   return (
     <Box>
       <Navigation />
-      <Outlet context={categoryOptions} />
+      <Outlet context={{ categoryOptions }} />
     </Box>
   );
 };

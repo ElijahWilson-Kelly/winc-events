@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { BsPersonCircle } from "react-icons/bs";
 import { AiOutlineHome } from "react-icons/ai";
 import { Center, Text, useDisclosure } from "@chakra-ui/react";
-import { ChangeUserModal } from "./ChangeUserModal";
+import { ChangeUserModal } from "../modals/ChangeUserModal";
 import { UsersContext } from "./UsersContext";
 
 export const Navigation = () => {

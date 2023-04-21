@@ -11,12 +11,12 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { UsersContext } from "../components/UsersContext";
 
 import { CommentsSection } from "../components/CommentSections";
-import { NewEventModal } from "../components/NewEventModal";
-import { ConfirmDeleteModal } from "../components/ConfirmDeleteModal";
+import { EventFormModal } from "../modals/EventFormModal";
+import { ConfirmDeleteModal } from "../modals/ConfirmDeleteModal";
 
 export const loader = async ({ params }) => {
   const response = await fetch(
@@ -53,6 +53,8 @@ export const EventPage = () => {
     comments = [],
   } = useLoaderData();
 
+  const toast = useToast();
+
   const formData = {
     title,
     description,
@@ -64,19 +66,35 @@ export const EventPage = () => {
 
   const submitEdittedForm = async (newEventDetails) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/events/${newEventDetails.id}`,
-        {
-          headers: { "Content-Type": "application/json" },
-          method: "PATCH",
-          body: JSON.stringify(newEventDetails),
-        }
-      );
+      const response = await fetch(`http://localhost:3000/events/${id}`, {
+        headers: { "Content-Type": "application/json" },
+        method: "PATCH",
+        body: JSON.stringify(newEventDetails),
+      });
       onCloseForm();
-      navigate(`/event/${newEventDetails.id}`);
+      navigate(`/event/${id}`);
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const deleteEvent = async () => {
+    const response = await fetch(`http://localhost:3000/events/${id}`, {
+      headers: { "Content-Type": "application/json" },
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      console.log("all good");
+      toast({
+        title: "Event Deleted",
+        description: `Event ${title} has been deleted.`,
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+    navigate("/");
   };
 
   const createdByUser = allUsers.find((user) => user.id === createdById);
@@ -138,7 +156,7 @@ export const EventPage = () => {
         </Stack>
         <CommentsSection commentsFromServer={comments} eventId={id} />
       </Grid>
-      <NewEventModal
+      <EventFormModal
         isOpen={isOpenForm}
         onClose={onCloseForm}
         formData={formData}
@@ -148,6 +166,7 @@ export const EventPage = () => {
       <ConfirmDeleteModal
         isOpen={isOpenConfirmDelete}
         onClose={onCloseConfirmDelete}
+        deleteEvent={deleteEvent}
       />
     </>
   );

@@ -26,7 +26,6 @@ export const SearchBar = ({ searchTerm, setSearchTerm }) => {
           variant={"filled"}
           fontSize={"2rem"}
           fontWeight={200}
-          colorScheme="blue"
           onChange={handleChange}
         />
       </InputGroup>

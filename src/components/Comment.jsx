@@ -36,7 +36,7 @@ export const Comment = ({ comment, deleteComment }) => {
       <Box maxWidth={"85%"}>
         <Text overflowWrap={"anywhere"}>{comment.comment}</Text>
       </Box>
-      <Stack align={"center"} justify={"space-between"} gap={20}>
+      <Stack align={"center"} justify={"space-between"} gap={10}>
         <MdDelete
           fontSize={"1.4rem"}
           onClick={() => deleteComment(comment.id)}
