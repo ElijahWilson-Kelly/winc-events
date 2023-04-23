@@ -1,9 +1,19 @@
 import { Box, Text, Heading, Flex, Image } from "@chakra-ui/react";
 import { useOutletContext } from "react-router-dom";
 
+/***
+ * Event Card - renders are card component for an event on EventsPage
+ *
+ *  Props
+ *  - event {object}
+ *
+ *  Hooks
+ *  - useOutletContext - get function {getCategoryNameFromId} from Root
+ */
+
 export const EventCard = ({ event }) => {
   const maxParagraphLength = 80;
-  const { categoryOptions } = useOutletContext();
+  const { getCategoryNameFromId } = useOutletContext();
 
   const { title, description, categoryIds } = event;
   const startTime = new Date(event.startTime)
@@ -15,6 +25,8 @@ export const EventCard = ({ event }) => {
       className="event-card"
       direction={"column"}
       justifyContent={"space-between"}
+      maxWidth={"380px"}
+      justifySelf={"center"}
     >
       <Box>
         <Heading
@@ -43,9 +55,7 @@ export const EventCard = ({ event }) => {
       <Box>
         <Flex gap={5} justifyContent={"center"} justifySelf={"flex-end"}>
           {categoryIds.map((id) => {
-            const name =
-              categoryOptions.find((category) => category.id === id)?.name ||
-              "";
+            const name = getCategoryNameFromId(id);
             return (
               <Text color={"green.400"} key={id}>
                 {name}

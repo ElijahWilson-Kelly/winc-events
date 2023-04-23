@@ -1,23 +1,26 @@
 import { Checkbox, Flex, Text, Stack } from "@chakra-ui/react";
+import { useOutletContext } from "react-router-dom";
 
-export const Categories = ({ categories, setFilteredCategories }) => {
+export const Categories = ({ setFilteredCategories }) => {
+  const { categoryOptions } = useOutletContext();
+
   const handleChange = (e, category) => {
     if (e.target.checked) {
-      setFilteredCategories((prevState) => prevState.concat(category.name));
+      setFilteredCategories((prevState) => prevState.concat(category.id));
     } else {
       setFilteredCategories((prevState) =>
-        prevState.filter((item) => item != category.name)
+        prevState.filter((item) => item != category.id)
       );
     }
   };
 
   return (
     <Stack align={"center"}>
-      <Text fontWeight={100} fontSize={"2rem"}>
+      <Text fontWeight={200} fontSize={["1rem", "1.4rem", "1.7rem", "2rem"]}>
         Filter Categories
       </Text>
       <Flex gap={10} wrap={true}>
-        {categories.map((category) => (
+        {categoryOptions.map((category) => (
           <Checkbox
             key={category.id}
             onChange={(e) => handleChange(e, category)}

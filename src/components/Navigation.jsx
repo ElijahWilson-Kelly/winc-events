@@ -1,10 +1,16 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { BsPersonCircle } from "react-icons/bs";
 import { AiOutlineHome } from "react-icons/ai";
 import { Center, Text, useDisclosure } from "@chakra-ui/react";
 import { ChangeUserModal } from "../modals/ChangeUserModal";
 import { UsersContext } from "./UsersContext";
+
+/**
+ *  Navivation Bar Component
+ *  - useDisclosure used for for {changeUserModal}
+ *  - useContext used for retrieving users data from {UsersContext}
+ */
 
 export const Navigation = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -18,11 +24,11 @@ export const Navigation = () => {
           className="icon-hover-grow"
           onClick={onOpen}
         />
-        <Text>{currentUser?.name || "Guest"}</Text>
+        <Text>Change User</Text>
       </Center>
 
       <nav className="navigation">
-        <Link>New Event +</Link>
+        <Text>{currentUser?.name || "Guest"}</Text>
         <Link to="/">
           <AiOutlineHome size="1.4rem" className="icon-hover-grow" />
         </Link>

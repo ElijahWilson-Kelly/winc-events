@@ -18,6 +18,9 @@ import { CommentsSection } from "../components/CommentSections";
 import { EventFormModal } from "../modals/EventFormModal";
 import { ConfirmDeleteModal } from "../modals/ConfirmDeleteModal";
 
+/***
+ * loader for EventPage
+ */
 export const loader = async ({ params }) => {
   const response = await fetch(
     `http://localhost:3000/events?id=${params.eventId}`
@@ -25,6 +28,21 @@ export const loader = async ({ params }) => {
   const event = (await response.json())[0];
   return event;
 };
+
+/***
+ * Event Page
+ *
+ *  Hooks
+ *  - useDisclosure() - for {EventFormModal} and {ConfirmDeleteModal}
+ *  - useNavigate() - for refresh after form edit
+ *  - userContext() - get users data from {UsersContext}
+ *  - useLoaderData() - get event data from loader
+ *  - useToast() - display success and error messages
+ *
+ *  Functions
+ *  - submitEdittedForm (eventDetails) - Edits current event with "Patch" Request
+ *  - deleteEvent () - Deletes currentEvent with "Delete" request
+ */
 
 export const EventPage = () => {
   const {
@@ -39,6 +57,7 @@ export const EventPage = () => {
   } = useDisclosure();
 
   const navigate = useNavigate();
+  const toast = useToast();
   const { currentUser, allUsers } = useContext(UsersContext);
   const {
     id,
@@ -52,8 +71,6 @@ export const EventPage = () => {
     createdBy: createdById,
     comments = [],
   } = useLoaderData();
-
-  const toast = useToast();
 
   const formData = {
     title,
@@ -71,10 +88,27 @@ export const EventPage = () => {
         method: "PATCH",
         body: JSON.stringify(eventDetails),
       });
-      onCloseForm();
-      navigate(`/event/${id}`);
+      if (response.ok) {
+        onCloseForm();
+        toast({
+          title: "Event Edited",
+          description: `Event "${eventDetails.title}" has been edited.`,
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+        });
+        navigate(`/event/${id}`);
+      } else {
+        toast({
+          title: "Error",
+          description: `Sorry. Something went wrong. Please try again later.`,
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+      }
     } catch (err) {
-      console.log(err);
+      throw Error(err.message);
     }
   };
 
@@ -83,12 +117,19 @@ export const EventPage = () => {
       headers: { "Content-Type": "application/json" },
       method: "DELETE",
     });
-
     if (response.ok) {
       toast({
         title: "Event Deleted",
         description: `Event ${title} has been deleted.`,
         status: "success",
+        duration: 4000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: `Sorry. Something went wrong. Please try again later.`,
+        status: "error",
         duration: 4000,
         isClosable: true,
       });
@@ -104,7 +145,7 @@ export const EventPage = () => {
 
   return (
     <>
-      <Grid p={30} gap={10} templateColumns={["1fr 2fr"]}>
+      <Grid p={30} gap={10} templateColumns={["1fr", null, "1fr 2fr"]}>
         <Stack gap={2}>
           <Heading fontWeight={200} fontSize="3rem">
             {title}
@@ -120,7 +161,7 @@ export const EventPage = () => {
           <Flex align={"center"} gap={2}>
             <Text>{createdByUser?.name || "...loading"}</Text>
             <Image
-              src={createdByUser?.image || ""}
+              src={createdByUser?.image}
               boxSize={"50px"}
               borderRadius={"50%"}
               className={createdByCurrentUser ? "current-user" : ""}
@@ -161,6 +202,7 @@ export const EventPage = () => {
         formData={formData}
         onSubmit={submitEdittedEvent}
         id={id}
+        submitButtonText={"Save"}
       />
       <ConfirmDeleteModal
         isOpen={isOpenConfirmDelete}

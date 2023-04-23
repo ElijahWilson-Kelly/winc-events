@@ -2,8 +2,17 @@ import { createContext, useState, useEffect } from "react";
 
 export const UsersContext = createContext(null);
 
+/***
+ * UserContextProvider
+ *  - Provide users context for children
+ *
+ *  State
+ *  - currentUser {object} - current selected user
+ *  - allUsers {array} - all available users
+ */
+
 export const UsersContextProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState({});
   const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {

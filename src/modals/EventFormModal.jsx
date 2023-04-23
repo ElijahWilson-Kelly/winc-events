@@ -7,14 +7,13 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { EventForm } from "../components/EventForm";
-import { useOutletContext } from "react-router-dom";
 
 export const EventFormModal = ({
   isOpen,
   onClose,
   formData = {},
   onSubmit,
-  id,
+  submitButtonText,
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="scale" size="xl">
@@ -23,14 +22,14 @@ export const EventFormModal = ({
         backdropFilter="blur(10px) hue-rotate(90deg)"
       />
       <ModalContent>
-        <ModalHeader>New Event</ModalHeader>
+        <ModalHeader>Event</ModalHeader>
         <ModalCloseButton color="white" border="1px solid white" />
         <ModalBody>
           <EventForm
             formData={formData}
             onClose={onClose}
             onSubmit={onSubmit}
-            id={id}
+            submitButtonText={submitButtonText}
           />
         </ModalBody>
       </ModalContent>

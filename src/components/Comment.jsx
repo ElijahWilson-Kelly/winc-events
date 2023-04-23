@@ -4,18 +4,22 @@ import { UsersContext } from "./UsersContext";
 
 import { MdDelete } from "react-icons/md";
 
+/***
+ * Comment Component
+ *
+ *  Hooks
+ *  - useContext() - getting users from {UsersContext}
+ */
+
 export const Comment = ({ comment, deleteComment }) => {
   const { currentUser, allUsers } = useContext(UsersContext);
-
   const imageSrc =
     allUsers.find((user) => user.id === comment.commentedBy)?.image || "";
-
+  const commentedByCurrentUser = comment.commentedBy === currentUser?.id;
   const styling = {
     p: 5,
     borderRadius: 20,
   };
-
-  const commentedByCurrentUser = comment.commentedBy === currentUser?.id;
 
   if (commentedByCurrentUser) {
     styling.bg = "green.100";
@@ -36,7 +40,7 @@ export const Comment = ({ comment, deleteComment }) => {
       <Box maxWidth={"85%"}>
         <Text overflowWrap={"anywhere"}>{comment.comment}</Text>
       </Box>
-      <Stack align={"center"} justify={"space-between"} gap={10}>
+      <Stack align={"center"} justify={"space-between"} gap={3}>
         <MdDelete
           fontSize={"1.4rem"}
           onClick={() => deleteComment(comment.id)}

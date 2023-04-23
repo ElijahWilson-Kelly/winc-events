@@ -11,7 +11,28 @@ import {
   FormLabel,
 } from "@chakra-ui/react";
 
-export const EventForm = ({ onClose, formData, onSubmit, id }) => {
+/***
+ * EventForm - controlled Form
+ *
+ *  Props
+ *  - onClose() {function} - used to close the modal that renders the form
+ *  - formData {object}  - populates form with data provided
+ *  - onSubmit(formData) {function} - function to be called when submitting data
+ *  - submitButtonText {string} - text to be used for submit button
+ *
+ *  Hooks
+ *  - useOutletContext() - for getting categoryOptions
+ *
+ *  State
+ *  - (All form fields as is a controlled form)
+ */
+
+export const EventForm = ({
+  onClose,
+  formData,
+  onSubmit,
+  submitButtonText,
+}) => {
   const { categoryOptions } = useOutletContext();
 
   const dateNow = (offsetHours = 0) => {
@@ -55,7 +76,6 @@ export const EventForm = ({ onClose, formData, onSubmit, id }) => {
       categoryIds,
       startTime,
       endTime,
-      id,
     };
     onSubmit(formData);
   };
@@ -151,10 +171,10 @@ export const EventForm = ({ onClose, formData, onSubmit, id }) => {
       </FormControl>
 
       <Flex justify={"space-between"}>
-        <Button variant="outline" colorScheme="cyan" type="submit">
-          Add Event
+        <Button variant="outline" colorScheme="cyan" type="submit" w={40}>
+          {submitButtonText}
         </Button>
-        <Button variant="ghost" colorScheme="red" onClick={onClose}>
+        <Button variant="ghost" colorScheme="red" onClick={onClose} w={40}>
           Cancel
         </Button>
       </Flex>

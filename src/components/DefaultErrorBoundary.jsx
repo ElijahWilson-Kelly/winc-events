@@ -1,5 +1,11 @@
-import { Center, Heading, Stack, Text } from "@chakra-ui/react";
 import { useRouteError } from "react-router-dom";
+
+import { Center, Heading, Stack, Text } from "@chakra-ui/react";
+
+/***
+ * Default Error Boundary
+ *  - renders if there is an error in the app and displays error message
+ */
 
 export const DefaultErrorBoundary = () => {
   const error = useRouteError();

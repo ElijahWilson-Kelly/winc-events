@@ -5,13 +5,20 @@ import { Comment } from "./Comment";
 
 import { UsersContext } from "./UsersContext";
 
-// export const action = async ({ request, params }) => {
-//   const body = Object.fromEntries(await request.formData());
-//   body.id = +body.id;
-//   body.commentedBy = +body.commentedBy;
-
-//   return null;
-// };
+/***
+ * Comments Section
+ *
+ *  Hooks
+ *  - useContext() - get users data from {UserContext}
+ *  - useEffect() - when comments state is changed upload new comments array to server with "Patch" reequest
+ *
+ *  State
+ *  - comments { array = [{object}, {object},...] } - comments on event
+ *
+ *  Functions
+ *  - addComment (event) - adds comment {object} to {comments}
+ *  - deleteComment (id) - deletes comment {object} from {comments}
+ */
 
 export const CommentsSection = ({ commentsFromServer, eventId }) => {
   let [comments, setComments] = useState(commentsFromServer);
@@ -36,7 +43,7 @@ export const CommentsSection = ({ commentsFromServer, eventId }) => {
     })();
   }, [comments]);
 
-  const handleSubmit = (e) => {
+  const addComment = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const comment = Object.fromEntries(formData);
@@ -80,7 +87,7 @@ export const CommentsSection = ({ commentsFromServer, eventId }) => {
             />
           );
         })}
-        <Form method="patch" onSubmit={handleSubmit}>
+        <Form method="patch" onSubmit={addComment}>
           <Textarea
             placeholder="Write your comment:"
             resize={"none"}

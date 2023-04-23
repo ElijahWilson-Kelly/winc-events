@@ -11,6 +11,11 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
+/***
+ * Modal for changing current user
+ *  - displays all users and when a user is clicked changes {currentUser} in {UsersContext} to selected user
+ */
+
 export const ChangeUserModal = ({
   isOpen,
   onClose,
