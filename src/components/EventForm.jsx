@@ -11,7 +11,6 @@ import {
   FormLabel,
 } from "@chakra-ui/react";
 
-// Controlled Form
 export const EventForm = ({ onClose, formData, onSubmit, id }) => {
   const { categoryOptions } = useOutletContext();
 
@@ -40,7 +39,7 @@ export const EventForm = ({ onClose, formData, onSubmit, id }) => {
 
   const [title, setTitle] = useState(formData.title || "");
   const [description, setDescription] = useState(formData.description || "");
-  const [categories, setCategories] = useState(formData.categories || []);
+  const [categoryIds, setCategoryIds] = useState(formData.categories || []);
   const [location, setLocation] = useState(formData.location || "");
   const [startTime, setStartTime] = useState(
     formData.startTime || defaultStartTime
@@ -53,7 +52,7 @@ export const EventForm = ({ onClose, formData, onSubmit, id }) => {
       title,
       description,
       location,
-      categories,
+      categoryIds,
       startTime,
       endTime,
       id,
@@ -100,15 +99,15 @@ export const EventForm = ({ onClose, formData, onSubmit, id }) => {
                 key={category.id}
                 value={category.id}
                 name="categoryIds"
-                checked={categories.some((id) => id === category.id)}
+                checked={categoryIds.some((id) => id === category.id)}
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setCategories((prevCategories) => [
+                    setCategoryIds((prevCategories) => [
                       ...prevCategories,
                       category.id,
                     ]);
                   } else {
-                    setCategories((prevCategories) =>
+                    setCategoryIds((prevCategories) =>
                       prevCategories.filter((id) => id != category.id)
                     );
                   }

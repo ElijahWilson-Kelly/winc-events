@@ -7,11 +7,11 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { EventForm } from "../components/EventForm";
+import { useOutletContext } from "react-router-dom";
 
 export const EventFormModal = ({
   isOpen,
   onClose,
-  categoriesData,
   formData = {},
   onSubmit,
   id,
@@ -27,7 +27,6 @@ export const EventFormModal = ({
         <ModalCloseButton color="white" border="1px solid white" />
         <ModalBody>
           <EventForm
-            categoriesData={categoriesData}
             formData={formData}
             onClose={onClose}
             onSubmit={onSubmit}

@@ -1,55 +1,47 @@
-import React, { useState } from "react";
-import { Box, Center, Grid, Heading, useDisclosure } from "@chakra-ui/react";
-import { Link, useLoaderData, useOutletContext } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import {
+  Box,
+  Center,
+  Grid,
+  Heading,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
+import {
+  Link,
+  useLoaderData,
+  useNavigate,
+  useOutletContext,
+} from "react-router-dom";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 
 import { SearchBar } from "../components/SearchBar";
 import { Categories } from "../components/Categories";
 import { EventCard } from "../components/EventCard";
 import { EventFormModal } from "../modals/EventFormModal";
+import { UsersContext } from "../components/UsersContext";
 
 export const loader = async () => {
   try {
-    const responses = await Promise.all([
-      fetch(`http://localhost:3000/events`),
-      fetch(`http://localhost:3000/categories`),
-    ]);
-    if (responses.some((response) => !response.ok)) {
-      return new Error("Server Error");
+    const response = await fetch(`http://localhost:3000/events`);
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw Error("Resource not found!");
+      }
+      throw Error("Server Error!");
     }
-    return await Promise.all(responses.map((response) => response.json()));
+    return response.json();
   } catch (err) {
-    return new Error(err.message);
+    throw Error(err.message);
   }
 };
 
-// export const action = async ({ params, request }) => {
-//   const formData = Array.from(await request.formData());
-//   const categoryIds = formData
-//     .filter((entry) => entry[0] === "category")
-//     .map((entry) => +entry[1]);
-//   const body = Object.fromEntries(formData);
-//   body.categoryIds = categoryIds;
-//   delete body.category;
-//   try {
-//     const response = await fetch("http://localhost:3000/events/", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(body),
-//     });
-//     if (!response.ok) {
-//       console.log(response.message);
-//     }
-//     return redirect("/");
-//   } catch (err) {
-//     return null;
-//   }
-// };
-
 export const EventsPage = () => {
-  const [eventsData, categoriesData] = useLoaderData();
+  const eventsData = useLoaderData() || [];
+  const toast = useToast();
+  const navigate = useNavigate();
+  const { categoryOptions } = useOutletContext();
+  const { currentUser } = useContext(UsersContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
@@ -61,9 +53,8 @@ export const EventsPage = () => {
   if (filteredCategories.length > 0) {
     filteredEvents = filteredEvents.filter((event) =>
       event.categoryIds.some((id) => {
-        const categoryName = categoriesData.find(
-          (category) => category.id === id
-        ).name;
+        const categoryName =
+          categoryOptions.find((category) => category.id === id)?.name || "";
         return filteredCategories.includes(categoryName);
       })
     );
@@ -79,6 +70,30 @@ export const EventsPage = () => {
     return highest + 1;
   };
 
+  const submitNewEvent = async (eventDetails) => {
+    eventDetails.createdBy = currentUser.id;
+    try {
+      const response = await fetch(`http://localhost:3000/events/`, {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify(eventDetails),
+      });
+      if (response.ok) {
+        toast({
+          title: "Event Added",
+          description: `Event ${eventDetails.title} has been added.`,
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+        });
+      }
+      onClose();
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Grid templateColumns={"80px 1fr 80px"}>
       <Box className="side-bar" />
@@ -88,7 +103,7 @@ export const EventsPage = () => {
         </Heading>
         <SearchBar value={searchTerm} setSearchTerm={setSearchTerm} />
         <Categories
-          categories={categoriesData}
+          categories={categoryOptions}
           setFilteredCategories={setFilteredCategories}
         />
         <Grid
@@ -103,7 +118,7 @@ export const EventsPage = () => {
           {filteredEvents.map((event) => {
             return (
               <Link to={`event/${event.id}`} key={event.id}>
-                <EventCard event={event} categoriesData={categoriesData} />
+                <EventCard event={event} />
               </Link>
             );
           })}
@@ -116,8 +131,8 @@ export const EventsPage = () => {
       <EventFormModal
         isOpen={isOpen}
         onClose={onClose}
-        categoriesData={categoriesData}
         id={findNextHighestId(eventsData)}
+        onSubmit={submitNewEvent}
       />
     </Grid>
   );

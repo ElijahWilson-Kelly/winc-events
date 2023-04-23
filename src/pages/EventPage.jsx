@@ -64,12 +64,12 @@ export const EventPage = () => {
     endTime,
   };
 
-  const submitEdittedForm = async (newEventDetails) => {
+  const submitEdittedEvent = async (eventDetails) => {
     try {
       const response = await fetch(`http://localhost:3000/events/${id}`, {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
-        body: JSON.stringify(newEventDetails),
+        body: JSON.stringify(eventDetails),
       });
       onCloseForm();
       navigate(`/event/${id}`);
@@ -85,7 +85,6 @@ export const EventPage = () => {
     });
 
     if (response.ok) {
-      console.log("all good");
       toast({
         title: "Event Deleted",
         description: `Event ${title} has been deleted.`,
@@ -160,7 +159,7 @@ export const EventPage = () => {
         isOpen={isOpenForm}
         onClose={onCloseForm}
         formData={formData}
-        onSubmit={submitEdittedForm}
+        onSubmit={submitEdittedEvent}
         id={id}
       />
       <ConfirmDeleteModal
