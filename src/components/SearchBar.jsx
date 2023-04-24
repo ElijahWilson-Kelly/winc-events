@@ -27,7 +27,7 @@ export const SearchBar = ({ searchTerm, setSearchTerm }) => {
           placeholder="search"
           variant={"filled"}
           fontSize={["1.4rem"]}
-          fontWeight={200}
+          fontWeight={300}
           onChange={handleChange}
         />
       </InputGroup>

@@ -68,10 +68,8 @@ export const EventsPage = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
-  let filteredEvents = eventsData.filter(
-    (event) =>
-      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.description.toLowerCase().includes(searchTerm.toLowerCase())
+  let filteredEvents = eventsData.filter((event) =>
+    event.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
   if (filteredCategories.length > 0) {
     filteredEvents = filteredEvents.filter((event) =>
@@ -93,6 +91,7 @@ export const EventsPage = () => {
     if (!eventDetails.id) {
       eventDetails.id = findNextHighestId();
     }
+    eventDetails.attendedBy = [];
     eventDetails.createdBy = currentUser.id;
     try {
       const response = await fetch(`http://localhost:3000/events/`, {
@@ -102,8 +101,8 @@ export const EventsPage = () => {
       });
       if (response.ok) {
         toast({
-          title: "Event Added",
-          description: `Event ${eventDetails.title} has been added.`,
+          title: "Event added",
+          description: `Event "${eventDetails.title}" has been added.`,
           status: "success",
           duration: 4000,
           isClosable: true,

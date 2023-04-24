@@ -11,7 +11,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
 import { UsersContext } from "../components/UsersContext";
 
 import { CommentsSection } from "../components/CommentSections";
@@ -39,6 +39,7 @@ export const loader = async ({ params }) => {
  *  - userContext() - get users data from {UsersContext}
  *  - useLoaderData() - get event data from loader
  *  - useToast() - display success and error messages
+ *  - useOutletContext() - for getting name of cateogry from id
  *
  *  Functions
  *  - submitEdittedForm (eventDetails) - Edits current event with "Patch" Request
@@ -72,6 +73,7 @@ export const EventPage = () => {
     createdBy: createdById,
     comments = [],
   } = useLoaderData();
+  const { getCategoryNameFromId } = useOutletContext();
 
   const formData = {
     title,
@@ -92,7 +94,7 @@ export const EventPage = () => {
       if (response.ok) {
         onCloseForm();
         toast({
-          title: "Event Edited",
+          title: "Event edited",
           description: `Event "${eventDetails.title}" has been edited.`,
           status: "success",
           duration: 4000,
@@ -120,8 +122,8 @@ export const EventPage = () => {
     });
     if (response.ok) {
       toast({
-        title: "Event Deleted",
-        description: `Event ${title} has been deleted.`,
+        title: "Event deleted",
+        description: `Event "${title}" has been deleted.`,
         status: "success",
         duration: 4000,
         isClosable: true,
@@ -152,6 +154,16 @@ export const EventPage = () => {
             {title}
           </Heading>
           <Image src={image} w={"400px"} objectFit="cover" borderRadius={5} />
+          <Flex gap={5}>
+            {categoryIds.map((id) => {
+              const name = getCategoryNameFromId(id);
+              return (
+                <Text color={"green.400"} key={id} fontSize={"1.2rem"}>
+                  {name}
+                </Text>
+              );
+            })}
+          </Flex>
           <Heading fontWeight={100}>What?</Heading>
           <Text>{description}</Text>
           <Heading fontWeight={100}>When?</Heading>
@@ -191,7 +203,7 @@ export const EventPage = () => {
           </ButtonGroup>
           {!createdByCurrentUser ? (
             <Text color="purple.500">
-              ! Only the user that created the event can edit and delete event.
+              Only the user that created the event can edit and delete event.
             </Text>
           ) : undefined}
         </Stack>

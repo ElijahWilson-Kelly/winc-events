@@ -3,6 +3,9 @@
   --blue-primary: #1d334a;
   --blue-dark: #101f2f;
   --selected-green: #88d188;
+  --card-gradient-one: #ffeeda44;
+  --card-gradient-two: #66b8db44;
+  --card-gradient-three: #8490ee44;
 }
 
 * {
@@ -40,30 +43,37 @@ header {
   box-shadow: 0px 0px 20px 1px var(--selected-green);
 }
 
-.side-bar {
-  background-color: #b2dcea22;
-}
-
 .event-card {
   margin: 20px;
-  padding: 10px;
-  border: 2px solid var(--blue-dark);
+  border: 2px solid var(--blue-primary);
+  box-shadow: 2px 2px 4px var(--blue-dark);
   border-radius: 4px;
   height: 400px;
   width: 320px;
   justify-self: stretch;
+  background: linear-gradient(
+    45deg,
+    var(--card-gradient-one) 0%,
+    var(--card-gradient-two) 40%,
+    var(--card-gradient-three) 50%,
+    var(--card-gradient-two) 60%,
+    var(--card-gradient-one) 100%
+  );
+}
+
+.event-card:hover {
+  transform: translate(-5px, -5px);
+  box-shadow: 7px 7px 4px 0px var(--blue-dark);
 }
 
 .new-card {
-  background-color: rgb(215, 215, 215);
   border: none;
   color: rgb(101, 101, 101);
-  font-size: 3.2rem;
+  font-size: 3.6rem;
   opacity: 0.8;
 }
 
 .new-card:hover {
-  background-color: rgb(229, 229, 229);
   color: white;
   cursor: pointer;
 }

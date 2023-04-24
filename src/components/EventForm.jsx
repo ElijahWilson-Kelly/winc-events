@@ -60,7 +60,7 @@ export const EventForm = ({
 
   const [title, setTitle] = useState(formData.title || "");
   const [description, setDescription] = useState(formData.description || "");
-  const [categoryIds, setCategoryIds] = useState(formData.categories || []);
+  const [categoryIds, setCategoryIds] = useState(formData.categoryIds || []);
   const [location, setLocation] = useState(formData.location || "");
   const [startTime, setStartTime] = useState(
     formData.startTime?.slice(0, 16) || defaultStartTime
@@ -121,7 +121,7 @@ export const EventForm = ({
                 key={category.id}
                 value={category.id}
                 name="categoryIds"
-                checked={categoryIds.some((id) => id === category.id)}
+                isChecked={categoryIds.some((id) => id === category.id)}
                 onChange={(e) => {
                   if (e.target.checked) {
                     setCategoryIds((prevCategories) => [

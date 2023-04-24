@@ -29,23 +29,25 @@ export const EventCard = ({ event }) => {
     >
       <Box>
         <Heading
-          fontSize="2xl"
-          fontWeight={300}
+          fontSize="3xl"
+          fontWeight={400}
           color="blue.900"
-          mb={2}
+          m={4}
           textAlign={"center"}
         >
           {title}
         </Heading>
         <Image
           src={event.image}
+          fallbackSrc="https://www.pikpng.com/pngl/m/106-1069399_iam-add-group1-sorry-no-image-available-clipart.png"
           objectFit="cover"
           w={"100%"}
           h={40}
-          borderBottom={"5px solid black"}
-          borderTop={"5px solid black"}
+          borderBottom={"2px solid"}
+          borderTop={"2px solid"}
+          borderColor={"blue.700"}
         />
-        <Text color={"gray.600"} fontWeight={200}>
+        <Text color={"gray.800"} fontWeight={400} mx={4} my={2}>
           {description.length > maxParagraphLength
             ? description.slice(0, maxParagraphLength) + "..."
             : description}
@@ -62,7 +64,7 @@ export const EventCard = ({ event }) => {
             );
           })}
         </Flex>
-        <Text fontSize={"xs"} textAlign={"center"} color="gray.500">
+        <Text fontSize={"xs"} textAlign={"center"} color="gray.500" mb={5}>
           {startTime} - {endTime}
         </Text>
       </Box>
@@ -75,7 +77,7 @@ EventCard.propTypes = {
     createdBy: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
+    image: PropTypes.string,
     categoryIds: PropTypes.arrayOf(PropTypes.number).isRequired,
     attendedBy: PropTypes.arrayOf(PropTypes.number).isRequired,
     location: PropTypes.string.isRequired,
