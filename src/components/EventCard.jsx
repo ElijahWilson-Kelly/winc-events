@@ -1,5 +1,6 @@
-import { Box, Text, Heading, Flex, Image } from "@chakra-ui/react";
 import { useOutletContext } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Box, Text, Heading, Flex, Image } from "@chakra-ui/react";
 
 /***
  * Event Card - renders are card component for an event on EventsPage
@@ -25,8 +26,6 @@ export const EventCard = ({ event }) => {
       className="event-card"
       direction={"column"}
       justifyContent={"space-between"}
-      maxWidth={"380px"}
-      justifySelf={"center"}
     >
       <Box>
         <Heading
@@ -69,4 +68,26 @@ export const EventCard = ({ event }) => {
       </Box>
     </Flex>
   );
+};
+
+EventCard.propTypes = {
+  event: PropTypes.exact({
+    createdBy: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    categoryIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+    attendedBy: PropTypes.arrayOf(PropTypes.number).isRequired,
+    location: PropTypes.string.isRequired,
+    startTime: PropTypes.string.isRequired,
+    endTime: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    comments: PropTypes.arrayOf(
+      PropTypes.exact({
+        comment: PropTypes.string.isRequired,
+        commentedBy: PropTypes.number.isRequired,
+        id: PropTypes.number.isRequired,
+      })
+    ),
+  }).isRequired,
 };

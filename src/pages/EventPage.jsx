@@ -20,6 +20,7 @@ import { ConfirmDeleteModal } from "../modals/ConfirmDeleteModal";
 
 /***
  * loader for EventPage
+ *  returns event {object}
  */
 export const loader = async ({ params }) => {
   const response = await fetch(
@@ -65,7 +66,7 @@ export const EventPage = () => {
     description,
     image,
     location,
-    categories,
+    categoryIds,
     startTime,
     endTime,
     createdBy: createdById,
@@ -75,7 +76,7 @@ export const EventPage = () => {
   const formData = {
     title,
     description,
-    categories,
+    categoryIds,
     location,
     startTime,
     endTime,

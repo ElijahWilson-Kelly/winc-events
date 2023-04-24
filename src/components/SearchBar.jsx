@@ -1,10 +1,5 @@
-import {
-  Box,
-  Center,
-  Input,
-  InputLeftElement,
-  InputGroup,
-} from "@chakra-ui/react";
+import PropTypes from "prop-types";
+import { Center, Input, InputLeftElement, InputGroup } from "@chakra-ui/react";
 import { BsSearch } from "react-icons/bs";
 
 /***
@@ -12,7 +7,6 @@ import { BsSearch } from "react-icons/bs";
  *  Props
  *  - searchTerm {string}
  *  - setSearchTerm {function}
- *
  */
 
 export const SearchBar = ({ searchTerm, setSearchTerm }) => {
@@ -39,4 +33,9 @@ export const SearchBar = ({ searchTerm, setSearchTerm }) => {
       </InputGroup>
     </Center>
   );
+};
+
+SearchBar.propTypes = {
+  searchTerm: PropTypes.string.isRequired,
+  setSearchTerm: PropTypes.func.isRequired,
 };

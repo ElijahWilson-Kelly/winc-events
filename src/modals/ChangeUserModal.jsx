@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import {
   Modal,
   ModalOverlay,
@@ -72,4 +73,22 @@ export const ChangeUserModal = ({
       </ModalContent>
     </Modal>
   );
+};
+
+ChangeUserModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  allUsers: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
+    })
+  ),
+  currentUser: PropTypes.exact({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    image: PropTypes.string,
+  }),
+  setCurrentUser: PropTypes.func.isRequired,
 };

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import {
   Modal,
   ModalOverlay,
@@ -35,4 +36,20 @@ export const EventFormModal = ({
       </ModalContent>
     </Modal>
   );
+};
+
+EventFormModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  formData: PropTypes.exact({
+    title: PropTypes.string,
+    description: PropTypes.string,
+    categoryIds: PropTypes.arrayOf(PropTypes.number),
+    location: PropTypes.string,
+    startTime: PropTypes.string,
+    endTime: PropTypes.string,
+    id: PropTypes.number,
+  }),
+  onSubmit: PropTypes.func.isRequired,
+  submitButtonText: PropTypes.string.isRequired,
 };

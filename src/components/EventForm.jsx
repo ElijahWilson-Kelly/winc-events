@@ -1,6 +1,6 @@
 import { useState } from "react";
-
 import { Form, useOutletContext } from "react-router-dom";
+import PropTypes from "prop-types";
 import {
   Input,
   Textarea,
@@ -63,9 +63,11 @@ export const EventForm = ({
   const [categoryIds, setCategoryIds] = useState(formData.categories || []);
   const [location, setLocation] = useState(formData.location || "");
   const [startTime, setStartTime] = useState(
-    formData.startTime || defaultStartTime
+    formData.startTime?.slice(0, 16) || defaultStartTime
   );
-  const [endTime, setEndTime] = useState(formData.endTime || defaultEndTime);
+  const [endTime, setEndTime] = useState(
+    formData.endTime?.slice(0, 16) || defaultEndTime
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -180,4 +182,19 @@ export const EventForm = ({
       </Flex>
     </Form>
   );
+};
+
+EventForm.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  formData: PropTypes.exact({
+    title: PropTypes.string,
+    description: PropTypes.string,
+    categoryIds: PropTypes.arrayOf(PropTypes.number),
+    location: PropTypes.string,
+    startTime: PropTypes.string,
+    endTime: PropTypes.string,
+    id: PropTypes.number,
+  }).isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  submitButtonText: PropTypes.string.isRequired,
 };

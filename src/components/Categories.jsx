@@ -1,5 +1,6 @@
-import { Checkbox, Flex, Text, Stack } from "@chakra-ui/react";
 import { useOutletContext } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Checkbox, Flex, Text, Stack } from "@chakra-ui/react";
 
 export const Categories = ({ setFilteredCategories }) => {
   const { categoryOptions } = useOutletContext();
@@ -32,4 +33,8 @@ export const Categories = ({ setFilteredCategories }) => {
       </Flex>
     </Stack>
   );
+};
+
+Categories.propTypes = {
+  setFilteredCategories: PropTypes.func.isRequired,
 };

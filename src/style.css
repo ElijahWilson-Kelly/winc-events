@@ -50,6 +50,8 @@ header {
   border: 2px solid var(--blue-dark);
   border-radius: 4px;
   height: 400px;
+  width: 320px;
+  justify-self: stretch;
 }
 
 .new-card {

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import {
   Modal,
   ModalOverlay,
@@ -42,4 +43,10 @@ export const ConfirmDeleteModal = ({ isOpen, onClose, deleteEvent }) => {
       </ModalContent>
     </Modal>
   );
+};
+
+ConfirmDeleteModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  deleteEvent: PropTypes.func.isRequired,
 };

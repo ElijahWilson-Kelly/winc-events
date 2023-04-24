@@ -1,11 +1,16 @@
-import { Flex, Box, Image, Text, Stack } from "@chakra-ui/react";
 import { useContext } from "react";
-import { UsersContext } from "./UsersContext";
-
+import PropTypes from "prop-types";
+import { Flex, Box, Image, Text, Stack } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
+
+import { UsersContext } from "./UsersContext";
 
 /***
  * Comment Component
+ *
+ *  Props
+ *  - comment {object}
+ *  - deleteComment {function}
  *
  *  Hooks
  *  - useContext() - getting users from {UsersContext}
@@ -57,4 +62,13 @@ export const Comment = ({ comment, deleteComment }) => {
       </Stack>
     </Flex>
   );
+};
+
+Comment.propTypes = {
+  comment: PropTypes.exact({
+    comment: PropTypes.string.isRequired,
+    commentedBy: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  deleteComment: PropTypes.func.isRequired,
 };

@@ -25,6 +25,7 @@ import { UsersContext } from "../components/UsersContext";
 /***
  * Loader for EventsPage
  *  - retrieves events data from server.
+ *  returns events { array = [{object}, {object}, ...] }
  */
 export const loader = async () => {
   try {
@@ -131,7 +132,7 @@ export const EventsPage = () => {
           <Heading p={10} size={"3xl"} fontWeight={200}>
             Events
           </Heading>
-          <SearchBar value={searchTerm} setSearchTerm={setSearchTerm} />
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <Categories setFilteredCategories={setFilteredCategories} />
           <Grid
             templateColumns={[

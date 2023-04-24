@@ -1,12 +1,16 @@
-import { Box, Heading, Stack, Textarea, Button, Text } from "@chakra-ui/react";
 import { useState, useEffect, useContext } from "react";
-import { Form, useSubmit } from "react-router-dom";
-import { Comment } from "./Comment";
-
+import { Form } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Heading, Stack, Textarea, Button, Text } from "@chakra-ui/react";
 import { UsersContext } from "./UsersContext";
+import { Comment } from "./Comment";
 
 /***
  * Comments Section
+ *
+ *  Props
+ *  - commentsFromServer { array }
+ *  - eventId { number }
  *
  *  Hooks
  *  - useContext() - get users data from {UserContext}
@@ -100,4 +104,9 @@ export const CommentsSection = ({ commentsFromServer, eventId }) => {
       </Stack>
     </Stack>
   );
+};
+
+CommentsSection.propTypes = {
+  commentsFromServer: PropTypes.array.isRequired,
+  eventId: PropTypes.number.isRequired,
 };
