@@ -28,7 +28,7 @@ export const Root = () => {
   }, []);
 
   return (
-    <Box>
+    <Box bg="#ebeef4">
       <Navigation />
       <Outlet context={{ categoryOptions, getCategoryNameFromId }} />
     </Box>

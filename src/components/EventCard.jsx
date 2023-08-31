@@ -22,32 +22,24 @@ export const EventCard = ({ event }) => {
     .slice(0, -3);
   const endTime = new Date(event.endTime).toLocaleString("en-GB").slice(0, -3);
   return (
-    <Flex
-      className="event-card"
-      direction={"column"}
-      justifyContent={"space-between"}
-    >
-      <Box>
-        <Heading
-          fontSize="3xl"
-          fontWeight={400}
-          color="blue.900"
-          m={4}
-          textAlign={"center"}
-        >
+    <Flex className="event-card" direction={"column"}>
+      <Image
+        src={event.image}
+        fallbackSrc="https://www.pikpng.com/pngl/m/106-1069399_iam-add-group1-sorry-no-image-available-clipart.png"
+        objectFit="cover"
+        w={"100%"}
+        h={40}
+        borderBottom={"2px solid"}
+        borderColor={"blue.700"}
+      />
+      <Box px={"10px"}>
+        <Text fontSize={"xs"} color="gray.500">
+          {startTime} - {endTime}
+        </Text>
+        <Heading fontSize="1.2rem" fontWeight={400} color="blue.900">
           {title}
         </Heading>
-        <Image
-          src={event.image}
-          fallbackSrc="https://www.pikpng.com/pngl/m/106-1069399_iam-add-group1-sorry-no-image-available-clipart.png"
-          objectFit="cover"
-          w={"100%"}
-          h={40}
-          borderBottom={"2px solid"}
-          borderTop={"2px solid"}
-          borderColor={"blue.700"}
-        />
-        <Text color={"gray.800"} fontWeight={400} mx={4} my={2}>
+        <Text fontSize="0.8rem" color={"gray.600"} fontWeight={400}>
           {description.length > maxParagraphLength
             ? description.slice(0, maxParagraphLength) + "..."
             : description}
@@ -64,9 +56,6 @@ export const EventCard = ({ event }) => {
             );
           })}
         </Flex>
-        <Text fontSize={"xs"} textAlign={"center"} color="gray.500" mb={5}>
-          {startTime} - {endTime}
-        </Text>
       </Box>
     </Flex>
   );

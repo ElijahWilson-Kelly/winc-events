@@ -29,7 +29,12 @@ import { UsersContext } from "../components/UsersContext";
  */
 export const loader = async () => {
   try {
-    const response = await fetch(`http://localhost:3000/events`);
+    const response = await fetch(
+      `http://localhost:8888/.netlify/functions/events`
+    );
+    const body = await response.json();
+    console.log(body);
+    return [];
     if (!response.ok) {
       if (response.status === 404) {
         throw Error("Resource not found!");
@@ -125,40 +130,43 @@ export const EventsPage = () => {
 
   return (
     <>
-      <Grid templateColumns={["1px 1fr 1px", null, null, "80px 1fr 80px"]}>
-        <Box className="side-bar" />
-        <Stack align={"center"}>
-          <Heading p={10} size={"3xl"} fontWeight={200}>
-            Events
-          </Heading>
-          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-          <Categories setFilteredCategories={setFilteredCategories} />
-          <Grid
-            templateColumns={[
-              "repeat(1,1fr)",
-              null,
-              "repeat(2,1fr)",
-              null,
-              "repeat(3,1fr)",
-              "repeat(4, 1fr)",
-            ]}
-            p={10}
-            mx={"auto"}
-          >
-            {filteredEvents.map((event) => {
-              return (
-                <Link to={`event/${event.id}`} key={event.id}>
-                  <EventCard event={event} />
-                </Link>
-              );
-            })}
-            <Center className="event-card new-card" onClick={onOpen}>
-              <AiOutlinePlusSquare />
-            </Center>
-          </Grid>
-        </Stack>
-        <Box className="side-bar" />
-      </Grid>
+      <Stack
+        border={"1px solid #999"}
+        boxShadow={"0px 0px 2px 0px #999"}
+        m={"60px"}
+        borderRadius={"10px"}
+        bg="white"
+        p={"20px"}
+      >
+        <Heading fontSize={"2rem"} fontWeight={800} textAlign={"left"}>
+          Event
+        </Heading>
+        <Grid
+          templateColumns={[
+            "repeat(1,1fr)",
+            null,
+            "repeat(2,1fr)",
+            null,
+            "repeat(3,1fr)",
+            "repeat(4, 1fr)",
+          ]}
+          p={5}
+          mx={"auto"}
+          gap={3}
+        >
+          {filteredEvents.map((event) => {
+            return (
+              <Link to={`event/${event.id}`} key={event.id}>
+                <EventCard event={event} />
+              </Link>
+            );
+          })}
+          <Center className="event-card new-card" onClick={onOpen}>
+            <AiOutlinePlusSquare />
+          </Center>
+        </Grid>
+      </Stack>
+
       <EventFormModal
         isOpen={isOpen}
         onClose={onClose}

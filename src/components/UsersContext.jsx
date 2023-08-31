@@ -16,6 +16,7 @@ export const UsersContextProvider = ({ children }) => {
   const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
+    return;
     (async () => {
       const response = await fetch("http://localhost:3000/users");
       const users = await response.json();
