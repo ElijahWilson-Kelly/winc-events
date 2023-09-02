@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { BsPersonCircle } from "react-icons/bs";
 import { AiOutlineHome } from "react-icons/ai";
-import { Center, Text, useDisclosure } from "@chakra-ui/react";
+import { Center, Image, Text, useDisclosure } from "@chakra-ui/react";
 import { ChangeUserModal } from "../modals/ChangeUserModal";
 import { UsersContext } from "./UsersContext";
 
@@ -19,23 +19,28 @@ export const Navigation = () => {
   return (
     <header>
       <Center gap={3}>
-        <BsPersonCircle
-          size="2rem"
-          className="icon-hover-grow"
+        <Image
+          src={currentUser?.image}
+          alt="profile of current user"
+          height={"40px"}
+          width={"40px"}
+          borderRadius={"50%"}
+          objectFit={"cover"}
+          className="icon-hover-grow current-user"
           onClick={onOpen}
         />
-        <Text>Change User</Text>
+        <Text>{currentUser?.name || "Guest"}</Text>
       </Center>
 
       <nav className="navigation">
-        <Text>{currentUser?.name || "Guest"}</Text>
         <Link to="/">
           <AiOutlineHome size="1.4rem" className="icon-hover-grow" />
         </Link>
       </nav>
+
       <ChangeUserModal
-        onClose={onClose}
         isOpen={isOpen}
+        onClose={onClose}
         allUsers={allUsers}
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}

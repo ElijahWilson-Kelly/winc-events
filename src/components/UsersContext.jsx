@@ -17,7 +17,7 @@ export const UsersContextProvider = ({ children }) => {
 
   useEffect(() => {
     (async () => {
-      const response = await fetch("http://localhost:3000/users");
+      const response = await fetch("https://events-data.onrender.com/users");
       const users = await response.json();
       setAllUsers(users);
       setCurrentUser(users[0]);

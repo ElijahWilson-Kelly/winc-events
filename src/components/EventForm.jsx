@@ -10,6 +10,7 @@ import {
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
+import { categoriesColors } from "../../categoryToColor";
 
 /***
  * EventForm - controlled Form
@@ -32,9 +33,8 @@ export const EventForm = ({
   formData,
   onSubmit,
   submitButtonText,
+  categories,
 }) => {
-  const { categoryOptions } = useOutletContext();
-
   const dateNow = (offsetHours = 0) => {
     let date = new Date();
     if (offsetHours != 0) {
@@ -60,6 +60,7 @@ export const EventForm = ({
 
   const [title, setTitle] = useState(formData.title || "");
   const [description, setDescription] = useState(formData.description || "");
+  const [image, setImage] = useState(formData.image || "");
   const [categoryIds, setCategoryIds] = useState(formData.categoryIds || []);
   const [location, setLocation] = useState(formData.location || "");
   const [startTime, setStartTime] = useState(
@@ -73,6 +74,7 @@ export const EventForm = ({
     e.preventDefault();
     const formData = {
       title,
+      image,
       description,
       location,
       categoryIds,
@@ -113,15 +115,26 @@ export const EventForm = ({
       </FormControl>
 
       <FormControl>
+        <FormLabel>Image url</FormLabel>
+        <Input
+          name="image"
+          value={image}
+          onChange={(e) => setImage(e.target.value)}
+        />
+      </FormControl>
+
+      <FormControl>
         <FormLabel>Categories</FormLabel>
         <Flex gap={10}>
-          {categoryOptions.map((category) => {
+          {categories.map((category) => {
+            const color = categoriesColors[category.name];
             return (
               <Checkbox
                 key={category.id}
                 value={category.id}
                 name="categoryIds"
                 isChecked={categoryIds.some((id) => id === category.id)}
+                color={color}
                 onChange={(e) => {
                   if (e.target.checked) {
                     setCategoryIds((prevCategories) => [

@@ -11,23 +11,32 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { UsersContext } from "../components/UsersContext";
 
 import { CommentsSection } from "../components/CommentSections";
 import { EventFormModal } from "../modals/EventFormModal";
 import { ConfirmDeleteModal } from "../modals/ConfirmDeleteModal";
+import { categoriesColors } from "../../categoryToColor";
 
 /***
  * loader for EventPage
- *  returns event {object}
+ *  returns {object}
  */
 export const loader = async ({ params }) => {
-  const response = await fetch(
-    `http://localhost:3000/events?id=${params.eventId}`
-  );
-  const event = (await response.json())[0];
-  return event;
+  const fetchData = async (url) => {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  };
+  const [eventData, categoriesData] = await Promise.all([
+    fetchData(`https://events-data.onrender.com/events/${params.eventId}`),
+    fetchData("https://events-data.onrender.com/categories"),
+  ]);
+  return {
+    eventData,
+    categoriesData,
+  };
 };
 
 /***
@@ -62,23 +71,26 @@ export const EventPage = () => {
   const toast = useToast();
   const { currentUser, allUsers } = useContext(UsersContext);
   const {
-    id,
-    title,
-    description,
-    image,
-    location,
-    categoryIds,
-    startTime,
-    endTime,
-    createdBy: createdById,
-    comments = [],
+    eventData: {
+      id,
+      title,
+      description,
+      image,
+      location,
+      categoryIds,
+      startTime,
+      endTime,
+      createdBy: createdById,
+      comments = [],
+    },
+    categoriesData,
   } = useLoaderData();
-  const { getCategoryNameFromId } = useOutletContext();
 
   const formData = {
     title,
     description,
     categoryIds,
+    image,
     location,
     startTime,
     endTime,
@@ -86,11 +98,14 @@ export const EventPage = () => {
 
   const submitEdittedEvent = async (eventDetails) => {
     try {
-      const response = await fetch(`http://localhost:3000/events/${id}`, {
-        headers: { "Content-Type": "application/json" },
-        method: "PATCH",
-        body: JSON.stringify(eventDetails),
-      });
+      const response = await fetch(
+        `https://events-data.onrender.com/events/${id}`,
+        {
+          headers: { "Content-Type": "application/json" },
+          method: "PATCH",
+          body: JSON.stringify(eventDetails),
+        }
+      );
       if (response.ok) {
         onCloseForm();
         toast({
@@ -156,9 +171,12 @@ export const EventPage = () => {
           <Image src={image} w={"400px"} objectFit="cover" borderRadius={5} />
           <Flex gap={5}>
             {categoryIds.map((id) => {
-              const name = getCategoryNameFromId(id);
+              const { name } = categoriesData.find(
+                (category) => category.id == id
+              );
+              const color = categoriesColors[name];
               return (
-                <Text color={"green.400"} key={id} fontSize={"1.2rem"}>
+                <Text color={color} key={id} fontSize={"1.2rem"}>
                   {name}
                 </Text>
               );
@@ -172,7 +190,7 @@ export const EventPage = () => {
           </Text>
           <Heading fontWeight={100}>Created By</Heading>
           <Flex align={"center"} gap={2}>
-            <Text>{createdByUser?.name || "...loading"}</Text>
+            <Text>{createdByUser?.name}</Text>
             <Image
               src={createdByUser?.image}
               boxSize={"50px"}
@@ -215,6 +233,7 @@ export const EventPage = () => {
         formData={formData}
         onSubmit={submitEdittedEvent}
         id={id}
+        categories={categoriesData}
         submitButtonText={"Save"}
       />
       <ConfirmDeleteModal

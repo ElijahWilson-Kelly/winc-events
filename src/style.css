@@ -44,26 +44,11 @@ header {
 }
 
 .event-card {
-  margin: 20px;
-  border: 2px solid var(--blue-primary);
-  box-shadow: 2px 2px 4px var(--blue-dark);
-  border-radius: 4px;
-  height: 400px;
-  width: 320px;
-  justify-self: stretch;
-  background: linear-gradient(
-    45deg,
-    var(--card-gradient-one) 0%,
-    var(--card-gradient-two) 40%,
-    var(--card-gradient-three) 50%,
-    var(--card-gradient-two) 60%,
-    var(--card-gradient-one) 100%
-  );
-}
-
-.event-card:hover {
-  transform: translate(-5px, -5px);
-  box-shadow: 7px 7px 4px 0px var(--blue-dark);
+  border-radius: 10px;
+  height: 340px;
+  width: 100%;
+  box-shadow: 0px 0px 4px 1px gray;
+  overflow: hidden;
 }
 
 .new-card {
