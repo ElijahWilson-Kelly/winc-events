@@ -1,6 +1,6 @@
-import { useOutletContext } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Box, Text, Heading, Flex, Image } from "@chakra-ui/react";
+import { Box, Text, Heading, Flex, Stack, Image } from "@chakra-ui/react";
+import { categoriesColors } from "../../categoryToColor";
 
 /***
  * Event Card - renders are card component for an event on EventsPage
@@ -8,13 +8,10 @@ import { Box, Text, Heading, Flex, Image } from "@chakra-ui/react";
  *  Props
  *  - event {object}
  *
- *  Hooks
- *  - useOutletContext - get function {getCategoryNameFromId} from Root
  */
 
-export const EventCard = ({ event }) => {
+export const EventCard = ({ event, categories }) => {
   const maxParagraphLength = 80;
-  const { getCategoryNameFromId } = useOutletContext();
 
   const { title, description, categoryIds } = event;
   const startTime = new Date(event.startTime)
@@ -22,53 +19,47 @@ export const EventCard = ({ event }) => {
     .slice(0, -3);
   const endTime = new Date(event.endTime).toLocaleString("en-GB").slice(0, -3);
   return (
-    <Flex
-      className="event-card"
-      direction={"column"}
-      justifyContent={"space-between"}
-    >
-      <Box>
-        <Heading
-          fontSize="3xl"
-          fontWeight={400}
-          color="blue.900"
-          m={4}
-          textAlign={"center"}
-        >
-          {title}
-        </Heading>
-        <Image
-          src={event.image}
-          fallbackSrc="https://www.pikpng.com/pngl/m/106-1069399_iam-add-group1-sorry-no-image-available-clipart.png"
-          objectFit="cover"
-          w={"100%"}
-          h={40}
-          borderBottom={"2px solid"}
-          borderTop={"2px solid"}
-          borderColor={"blue.700"}
-        />
-        <Text color={"gray.800"} fontWeight={400} mx={4} my={2}>
-          {description.length > maxParagraphLength
-            ? description.slice(0, maxParagraphLength) + "..."
-            : description}
-        </Text>
-      </Box>
-      <Box>
-        <Flex gap={5} justifyContent={"center"} justifySelf={"flex-end"}>
-          {categoryIds.map((id) => {
-            const name = getCategoryNameFromId(id);
-            return (
-              <Text color={"green.400"} key={id}>
-                {name}
-              </Text>
-            );
-          })}
-        </Flex>
-        <Text fontSize={"xs"} textAlign={"center"} color="gray.500" mb={5}>
-          {startTime} - {endTime}
-        </Text>
-      </Box>
-    </Flex>
+    <Stack className="event-card">
+      <Image
+        src={event.image}
+        fallbackSrc="https://www.pikpng.com/pngl/m/106-1069399_iam-add-group1-sorry-no-image-available-clipart.png"
+        objectFit="cover"
+        w={"100%"}
+        height={"180px"}
+        minH={"180px"}
+        borderBottom={"2px solid"}
+        borderColor={"blue.700"}
+      />
+      <Stack gap={2} p={2}>
+        <Box>
+          <Text fontSize={"xs"} fontWeight={600} color="gray.600">
+            {startTime} - {endTime}
+          </Text>
+          <Heading fontSize={"1rem"} fontWeight={800}>
+            {title}
+          </Heading>
+
+          <Text color={"gray.800"} fontWeight={400}>
+            {description.length > maxParagraphLength
+              ? description.slice(0, maxParagraphLength) + "..."
+              : description}
+          </Text>
+          <Flex gap={5}>
+            {categoryIds.map((id) => {
+              const name =
+                categories.find((category) => category.id == id).name ||
+                "Unkown";
+              const color = categoriesColors[name];
+              return (
+                <Text color={color} key={id}>
+                  {name}
+                </Text>
+              );
+            })}
+          </Flex>
+        </Box>
+      </Stack>
+    </Stack>
   );
 };
 

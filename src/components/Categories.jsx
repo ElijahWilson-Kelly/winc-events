@@ -1,35 +1,47 @@
-import { useOutletContext } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Checkbox, Flex, Text, Stack } from "@chakra-ui/react";
+import { Button, Flex, Text, Stack } from "@chakra-ui/react";
+import { categoriesColors } from "../../categoryToColor";
 
-export const Categories = ({ setFilteredCategories }) => {
-  const { categoryOptions } = useOutletContext();
+export const Categories = ({ categories, setCategories }) => {
+  const toggleCategory = (id) => {
+    setCategories((prevCategories) => {
+      return prevCategories.map((category) => {
+        if (category.id != id) return category;
 
-  const handleChange = (e, category) => {
-    if (e.target.checked) {
-      setFilteredCategories((prevState) => prevState.concat(category.id));
-    } else {
-      setFilteredCategories((prevState) =>
-        prevState.filter((item) => item != category.id)
-      );
-    }
+        return {
+          ...category,
+          selected: !category.selected,
+        };
+      });
+    });
   };
 
   return (
-    <Stack align={"center"}>
-      <Text fontWeight={200} fontSize={["1rem", "1.4rem", "1.7rem", "2rem"]}>
-        Filter Categories
-      </Text>
-      <Flex gap={10} wrap={true}>
-        {categoryOptions.map((category) => (
-          <Checkbox
-            key={category.id}
-            onChange={(e) => handleChange(e, category)}
-            fontWeight={300}
-          >
-            {category.name}
-          </Checkbox>
-        ))}
+    <Stack>
+      <Flex gap={5} wrap={true} color={"white"}>
+        {categories.map((category, i) => {
+          let backgroundColor = categoriesColors[category.name];
+          let fontColor = "white";
+          if (!category.selected) {
+            backgroundColor += "22";
+            fontColor = "black";
+          }
+          return (
+            <Button
+              key={category.id}
+              onClick={() => toggleCategory(category.id)}
+              fontWeight={400}
+              bg={backgroundColor}
+              color={fontColor}
+              borderRadius={"40px"}
+              _hover={{
+                opacity: "0.7",
+              }}
+            >
+              {category.name}
+            </Button>
+          );
+        })}
       </Flex>
     </Stack>
   );

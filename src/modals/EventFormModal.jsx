@@ -15,6 +15,7 @@ export const EventFormModal = ({
   formData = {},
   onSubmit,
   submitButtonText,
+  categories,
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="scale" size="xl">
@@ -31,6 +32,7 @@ export const EventFormModal = ({
             onClose={onClose}
             onSubmit={onSubmit}
             submitButtonText={submitButtonText}
+            categories={categories}
           />
         </ModalBody>
       </ModalContent>

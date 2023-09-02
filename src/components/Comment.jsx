@@ -22,7 +22,7 @@ export const Comment = ({ comment, deleteComment }) => {
     allUsers.find((user) => user.id === comment.commentedBy)?.image || "";
   const commentedByCurrentUser = comment.commentedBy === currentUser?.id;
   const styling = {
-    p: 5,
+    p: 4,
     borderRadius: 20,
   };
 
@@ -39,13 +39,13 @@ export const Comment = ({ comment, deleteComment }) => {
       {...styling}
       justify={"space-between"}
       w={"100%"}
-      gap={5}
+      gap={2}
       className="comment"
     >
-      <Box maxWidth={"85%"}>
+      <Box>
         <Text overflowWrap={"anywhere"}>{comment.comment}</Text>
       </Box>
-      <Stack align={"center"} justify={"space-between"} gap={3}>
+      <Stack align={"center"} justify={"space-between"}>
         <MdDelete
           fontSize={"1.4rem"}
           onClick={() => deleteComment(comment.id)}
@@ -56,7 +56,9 @@ export const Comment = ({ comment, deleteComment }) => {
         <Image
           src={imageSrc}
           borderRadius={"50%"}
-          boxSize="50px"
+          w={"40px"}
+          minW={"40px"}
+          h={"40px"}
           className={commentedByCurrentUser ? "current-user" : ""}
         />
       </Stack>

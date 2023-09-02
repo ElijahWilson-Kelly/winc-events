@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import {
   Box,
   Center,
@@ -8,15 +8,9 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import {
-  Link,
-  useLoaderData,
-  useNavigate,
-  useOutletContext,
-} from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 
-import { SearchBar } from "../components/SearchBar";
 import { Categories } from "../components/Categories";
 import { EventCard } from "../components/EventCard";
 import { EventFormModal } from "../modals/EventFormModal";
@@ -29,14 +23,18 @@ import { UsersContext } from "../components/UsersContext";
  */
 export const loader = async () => {
   try {
-    const response = await fetch(`http://localhost:3000/events`);
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw Error("Resource not found!");
-      }
-      throw Error("Server Error!");
-    }
-    return response.json();
+    const eventsPromise = fetch(`https://events-data.onrender.com/events`);
+    const categoryPromise = fetch(
+      `https://events-data.onrender.com/categories`
+    );
+    const responses = await Promise.all([eventsPromise, categoryPromise]);
+    const [eventsData, categoriesData] = await Promise.all(
+      responses.map((res) => res.json())
+    );
+    return {
+      eventsData,
+      categoriesData,
+    };
   } catch (err) {
     throw Error(err.message);
   }
@@ -60,22 +58,57 @@ export const loader = async () => {
  */
 
 export const EventsPage = () => {
-  const eventsData = useLoaderData() || [];
+  const { eventsData, categoriesData } = useLoaderData() || {
+    eventsData: [],
+    categoriesData: [],
+  };
   const toast = useToast();
   const navigate = useNavigate();
   const { currentUser } = useContext(UsersContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredCategories, setFilteredCategories] = useState([]);
-  let filteredEvents = eventsData.filter((event) =>
-    event.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  if (filteredCategories.length > 0) {
-    filteredEvents = filteredEvents.filter((event) =>
-      event.categoryIds.some((id) => filteredCategories.includes(id))
+  const [categories, setCategories] = useState([]);
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    setCategories(
+      categoriesData.map((category) => {
+        return {
+          ...category,
+          selected: true,
+        };
+      })
     );
-  }
+  }, [categoriesData]);
+
+  useEffect(() => {
+    let newEvents = [];
+    console.log(categories);
+    const filteredCategoryIds = categories
+      .filter((category) => category.selected)
+      .map((category) => category.id);
+
+    for (const event of eventsData) {
+      if (!event.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+        continue;
+      }
+      if (event.categoryIds.every((id) => !filteredCategoryIds.includes(id))) {
+        continue;
+      }
+      newEvents.push(event);
+    }
+    setEvents(newEvents);
+  }, [searchTerm, categories]);
+
+  // let filteredEvents = eventsData.filter((event) =>
+  //   event.title.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+  // if (filteredCategories.length > 0) {
+  //   filteredEvents = filteredEvents.filter((event) =>
+  //     event.categoryIds.some((id) => filteredCategories.includes(id))
+  //   );
+  // }
 
   const findNextHighestId = () => {
     let highest = 0;
@@ -94,7 +127,7 @@ export const EventsPage = () => {
     eventDetails.attendedBy = [];
     eventDetails.createdBy = currentUser.id;
     try {
-      const response = await fetch(`http://localhost:3000/events/`, {
+      const response = await fetch(`https://events-data.onrender.com/events`, {
         headers: { "Content-Type": "application/json" },
         method: "POST",
         body: JSON.stringify(eventDetails),
@@ -125,30 +158,30 @@ export const EventsPage = () => {
 
   return (
     <>
-      <Grid templateColumns={["1px 1fr 1px", null, null, "80px 1fr 80px"]}>
-        <Box className="side-bar" />
-        <Stack align={"center"}>
-          <Heading p={10} size={"3xl"} fontWeight={200}>
+      <Box p={10}>
+        <Stack>
+          <Heading
+            size={"xl"}
+            fontWeight={300}
+            borderBottom={"2px solid black"}
+          >
             Events
           </Heading>
-          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-          <Categories setFilteredCategories={setFilteredCategories} />
+          <Categories categories={categories} setCategories={setCategories} />
           <Grid
             templateColumns={[
               "repeat(1,1fr)",
               null,
               "repeat(2,1fr)",
-              null,
               "repeat(3,1fr)",
               "repeat(4, 1fr)",
             ]}
-            p={10}
-            mx={"auto"}
+            gap={"15px"}
           >
-            {filteredEvents.map((event) => {
+            {events.map((event) => {
               return (
                 <Link to={`event/${event.id}`} key={event.id}>
-                  <EventCard event={event} />
+                  <EventCard event={event} categories={categories} />
                 </Link>
               );
             })}
@@ -157,13 +190,13 @@ export const EventsPage = () => {
             </Center>
           </Grid>
         </Stack>
-        <Box className="side-bar" />
-      </Grid>
+      </Box>
       <EventFormModal
         isOpen={isOpen}
         onClose={onClose}
         onSubmit={submitNewEvent}
         submitButtonText={"Add Event"}
+        categories={categories}
       />
     </>
   );

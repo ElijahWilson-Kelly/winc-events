@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Form } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Heading, Stack, Textarea, Button, Text } from "@chakra-ui/react";
+import { Heading, Stack, Textarea, Button, Box } from "@chakra-ui/react";
 import { UsersContext } from "./UsersContext";
 import { Comment } from "./Comment";
 
@@ -31,16 +31,13 @@ export const CommentsSection = ({ commentsFromServer, eventId }) => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/events/${eventId}`,
-          {
-            headers: { "Content-Type": "application/json" },
-            method: "PATCH",
-            body: JSON.stringify({
-              comments: comments,
-            }),
-          }
-        );
+        await fetch(`https://events-data.onrender.com/events/${eventId}`, {
+          headers: { "Content-Type": "application/json" },
+          method: "PATCH",
+          body: JSON.stringify({
+            comments: comments,
+          }),
+        });
       } catch (err) {
         console.log(err);
       }
@@ -71,37 +68,44 @@ export const CommentsSection = ({ commentsFromServer, eventId }) => {
 
   return (
     <Stack>
-      <Heading fontWeight={100} textAlign={"center"} fontSize={"3rem"}>
+      <Heading fontWeight={300} textAlign={"center"} fontSize={"2rem"}>
         Comments
       </Heading>
 
-      <Stack
+      <Box
         border="1px solid"
-        borderColor="blue.900"
+        borderColor="blue.200"
         borderRadius={10}
-        p={10}
-        boxShadow={"inset 0px 0px 2px 0px black"}
+        p={3}
+        boxShadow={"inset 0px 0px 1px 0px black"}
       >
-        {comments.map((comment) => {
-          return (
-            <Comment
-              key={comment.id}
-              comment={comment}
-              deleteComment={deleteComment}
-            />
-          );
-        })}
-        <Form method="patch" onSubmit={addComment}>
-          <Textarea
-            placeholder="Write your comment:"
-            resize={"none"}
-            name="comment"
-          ></Textarea>
-          <Button float={"right"} type="submit">
-            Add
-          </Button>
-        </Form>
-      </Stack>
+        <Stack
+          overflow={"scroll"}
+          borderRadius={"inherit"}
+          maxH={["400px", "500px", "600px"]}
+          p={2}
+        >
+          {comments.map((comment) => {
+            return (
+              <Comment
+                key={comment.id}
+                comment={comment}
+                deleteComment={deleteComment}
+              />
+            );
+          })}
+          <Form method="patch" onSubmit={addComment}>
+            <Textarea
+              placeholder="Write your comment:"
+              resize={"none"}
+              name="comment"
+            ></Textarea>
+            <Button float={"right"} type="submit">
+              Add
+            </Button>
+          </Form>
+        </Stack>
+      </Box>
     </Stack>
   );
 };

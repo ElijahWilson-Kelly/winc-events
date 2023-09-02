@@ -27,7 +27,7 @@ export const ChangeUserModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="none" size="full">
       <ModalOverlay />
-      <ModalContent bg="#170826F5">
+      <ModalContent bg={"#170826F5"}>
         <ModalCloseButton color="white" />
         <ModalBody display="flex" justifyContent="center" alignItems="center">
           <Center color="white">
@@ -37,7 +37,7 @@ export const ChangeUserModal = ({
               </Heading>
               <Flex gap={10} maxWidth={400}>
                 {allUsers.map((user) => {
-                  const isCurrentUser = user.id === currentUser.id;
+                  const isCurrentUser = user.id === currentUser?.id;
                   return (
                     <Flex
                       direction="column"
