@@ -21,6 +21,7 @@ import { UsersContext } from "../components/UsersContext";
  *  - retrieves events data from server.
  *  returns events { array = [{object}, {object}, ...] }
  */
+
 export const loader = async () => {
   try {
     const eventsPromise = fetch(`https://events-data.onrender.com/events`);
@@ -84,7 +85,6 @@ export const EventsPage = () => {
 
   useEffect(() => {
     let newEvents = [];
-    console.log(categories);
     const filteredCategoryIds = categories
       .filter((category) => category.selected)
       .map((category) => category.id);

@@ -10,7 +10,6 @@ import {
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
-import { categoriesColors } from "../../categoryToColor";
 
 /***
  * EventForm - controlled Form
@@ -127,7 +126,7 @@ export const EventForm = ({
         <FormLabel>Categories</FormLabel>
         <Flex gap={10}>
           {categories.map((category) => {
-            const color = categoriesColors[category.name];
+            const color = category.color;
             return (
               <Checkbox
                 key={category.id}

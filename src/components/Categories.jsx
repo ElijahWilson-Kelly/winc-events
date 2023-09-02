@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
-import { Button, Flex, Text, Stack } from "@chakra-ui/react";
-import { categoriesColors } from "../../categoryToColor";
+import { Button, Flex, Stack } from "@chakra-ui/react";
 
 export const Categories = ({ categories, setCategories }) => {
   const toggleCategory = (id) => {
@@ -20,7 +19,7 @@ export const Categories = ({ categories, setCategories }) => {
     <Stack>
       <Flex gap={5} wrap={true} color={"white"}>
         {categories.map((category, i) => {
-          let backgroundColor = categoriesColors[category.name];
+          let backgroundColor = category.color;
           let fontColor = "white";
           if (!category.selected) {
             backgroundColor += "22";

@@ -17,7 +17,6 @@ import { UsersContext } from "../components/UsersContext";
 import { CommentsSection } from "../components/CommentSections";
 import { EventFormModal } from "../modals/EventFormModal";
 import { ConfirmDeleteModal } from "../modals/ConfirmDeleteModal";
-import { categoriesColors } from "../../categoryToColor";
 
 /***
  * loader for EventPage
@@ -171,10 +170,10 @@ export const EventPage = () => {
           <Image src={image} w={"400px"} objectFit="cover" borderRadius={5} />
           <Flex gap={5}>
             {categoryIds.map((id) => {
-              const { name } = categoriesData.find(
+              const { name, color } = categoriesData.find(
                 (category) => category.id == id
               );
-              const color = categoriesColors[name];
+
               return (
                 <Text color={color} key={id} fontSize={"1.2rem"}>
                   {name}

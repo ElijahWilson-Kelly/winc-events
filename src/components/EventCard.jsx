@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import { Box, Text, Heading, Flex, Stack, Image } from "@chakra-ui/react";
-import { categoriesColors } from "../../categoryToColor";
 
 /***
  * Event Card - renders are card component for an event on EventsPage
@@ -46,10 +45,10 @@ export const EventCard = ({ event, categories }) => {
           </Text>
           <Flex gap={5}>
             {categoryIds.map((id) => {
-              const name =
-                categories.find((category) => category.id == id).name ||
-                "Unkown";
-              const color = categoriesColors[name];
+              const { name, color } = categories.find(
+                (category) => category.id == id
+              );
+
               return (
                 <Text color={color} key={id}>
                   {name}
