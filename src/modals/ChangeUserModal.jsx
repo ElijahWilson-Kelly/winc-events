@@ -12,11 +12,6 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
-/***
- * Modal for changing current user
- *  - displays all users and when a user is clicked changes {currentUser} in {UsersContext} to selected user
- */
-
 export const ChangeUserModal = ({
   isOpen,
   onClose,
@@ -35,7 +30,12 @@ export const ChangeUserModal = ({
               <Heading color="white" textAlign="center" fontWeight={200}>
                 Select User
               </Heading>
-              <Flex gap={10} maxWidth={400}>
+              <Flex
+                gap={10}
+                maxWidth={[300, 400]}
+                overflowX={"scroll"}
+                p={"30px"}
+              >
                 {allUsers.map((user) => {
                   const isCurrentUser = user.id === currentUser?.id;
                   return (
@@ -52,7 +52,9 @@ export const ChangeUserModal = ({
                         className={isCurrentUser ? "current-user" : ""}
                         src={user.image}
                         borderRadius="full"
-                        boxSize="150px"
+                        w={"150px"}
+                        minW={"150px"}
+                        h={"150px"}
                         _hover={{
                           transform: "translateY(-10px)",
                           opacity: "0.4",

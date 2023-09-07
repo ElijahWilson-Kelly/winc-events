@@ -1,17 +1,18 @@
 import PropTypes from "prop-types";
 import { Button, Flex, Stack } from "@chakra-ui/react";
 
-export const Categories = ({ categories, setCategories }) => {
+export const Categories = ({
+  categories,
+  deselectedCategories,
+  setDeselectedCategories,
+}) => {
   const toggleCategory = (id) => {
-    setCategories((prevCategories) => {
-      return prevCategories.map((category) => {
-        if (category.id != id) return category;
-
-        return {
-          ...category,
-          selected: !category.selected,
-        };
-      });
+    setDeselectedCategories((previousIds) => {
+      if (previousIds.includes(id)) {
+        return previousIds.filter((i) => i != id);
+      } else {
+        return [...previousIds, id];
+      }
     });
   };
 
@@ -21,7 +22,7 @@ export const Categories = ({ categories, setCategories }) => {
         {categories.map((category, i) => {
           let backgroundColor = category.color;
           let fontColor = "white";
-          if (!category.selected) {
+          if (deselectedCategories.includes(category.id)) {
             backgroundColor += "22";
             fontColor = "black";
           }
@@ -47,5 +48,7 @@ export const Categories = ({ categories, setCategories }) => {
 };
 
 Categories.propTypes = {
-  setFilteredCategories: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
+  deselectedCategories: PropTypes.array.isRequired,
+  setDeselectedCategories: PropTypes.func.isRequired,
 };

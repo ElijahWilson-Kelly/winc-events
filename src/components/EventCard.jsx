@@ -1,14 +1,6 @@
 import PropTypes from "prop-types";
 import { Box, Text, Heading, Flex, Stack, Image } from "@chakra-ui/react";
 
-/***
- * Event Card - renders are card component for an event on EventsPage
- *
- *  Props
- *  - event {object}
- *
- */
-
 export const EventCard = ({ event, categories }) => {
   const maxParagraphLength = 80;
 

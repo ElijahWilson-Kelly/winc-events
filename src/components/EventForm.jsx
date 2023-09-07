@@ -11,22 +11,6 @@ import {
   FormLabel,
 } from "@chakra-ui/react";
 
-/***
- * EventForm - controlled Form
- *
- *  Props
- *  - onClose() {function} - used to close the modal that renders the form
- *  - formData {object}  - populates form with data provided
- *  - onSubmit(formData) {function} - function to be called when submitting data
- *  - submitButtonText {string} - text to be used for submit button
- *
- *  Hooks
- *  - useOutletContext() - for getting categoryOptions
- *
- *  State
- *  - (All form fields as is a controlled form)
- */
-
 export const EventForm = ({
   onClose,
   formData,
@@ -200,6 +184,7 @@ EventForm.propTypes = {
   onClose: PropTypes.func.isRequired,
   formData: PropTypes.exact({
     title: PropTypes.string,
+    image: PropTypes.string,
     description: PropTypes.string,
     categoryIds: PropTypes.arrayOf(PropTypes.number),
     location: PropTypes.string,

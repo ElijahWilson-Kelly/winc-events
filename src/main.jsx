@@ -8,9 +8,9 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { UsersContextProvider } from "./components/UsersContext";
 import { DefaultErrorBoundary } from "./components/DefaultErrorBoundary";
 import { EventPage, loader as eventPageLoader } from "./pages/EventPage";
-import { EventsPage, loader as eventsPageLoader } from "./pages/EventsPage";
+import { EventsPage } from "./pages/EventsPage";
 
-import { Root } from "./components/Root";
+import { Root } from "./Root";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +21,6 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <EventsPage />,
-        loader: eventsPageLoader,
       },
       {
         path: "/event/:eventId",
