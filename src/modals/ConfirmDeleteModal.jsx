@@ -11,14 +11,6 @@ import {
   ButtonGroup,
 } from "@chakra-ui/react";
 
-/***
- * Confirm Delete Modal
- *  Props
- *  - isOpen {boolean} - whether modal is displayed
- *  - onClose {function} - close modal
- *  - deleteEvent {function} - delete current event
- */
-
 export const ConfirmDeleteModal = ({ isOpen, onClose, deleteEvent }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="scale" isCentered>

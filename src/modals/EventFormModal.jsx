@@ -45,6 +45,7 @@ EventFormModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   formData: PropTypes.exact({
     title: PropTypes.string,
+    image: PropTypes.string,
     description: PropTypes.string,
     categoryIds: PropTypes.arrayOf(PropTypes.number),
     location: PropTypes.string,

@@ -5,25 +5,6 @@ import { Heading, Stack, Textarea, Button, Box } from "@chakra-ui/react";
 import { UsersContext } from "./UsersContext";
 import { Comment } from "./Comment";
 
-/***
- * Comments Section
- *
- *  Props
- *  - commentsFromServer { array }
- *  - eventId { number }
- *
- *  Hooks
- *  - useContext() - get users data from {UserContext}
- *  - useEffect() - when comments state is changed upload new comments array to server with "Patch" reequest
- *
- *  State
- *  - comments { array = [{object}, {object},...] } - comments on event
- *
- *  Functions
- *  - addComment (event) - adds comment {object} to {comments}
- *  - deleteComment (id) - deletes comment {object} from {comments}
- */
-
 export const CommentsSection = ({ commentsFromServer, eventId }) => {
   let [comments, setComments] = useState(commentsFromServer);
   const { currentUser } = useContext(UsersContext);

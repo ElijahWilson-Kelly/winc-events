@@ -5,17 +5,6 @@ import { MdDelete } from "react-icons/md";
 
 import { UsersContext } from "./UsersContext";
 
-/***
- * Comment Component
- *
- *  Props
- *  - comment {object}
- *  - deleteComment {function}
- *
- *  Hooks
- *  - useContext() - getting users from {UsersContext}
- */
-
 export const Comment = ({ comment, deleteComment }) => {
   const { currentUser, allUsers } = useContext(UsersContext);
   const imageSrc =

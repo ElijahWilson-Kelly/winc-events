@@ -2,13 +2,6 @@ import PropTypes from "prop-types";
 import { Center, Input, InputLeftElement, InputGroup } from "@chakra-ui/react";
 import { BsSearch } from "react-icons/bs";
 
-/***
- * Search Bar
- *  Props
- *  - searchTerm {string}
- *  - setSearchTerm {function}
- */
-
 export const SearchBar = ({ searchTerm, setSearchTerm }) => {
   const handleChange = (e) => {
     setSearchTerm(e.target.value);

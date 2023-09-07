@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Heading,
   Button,
@@ -11,48 +11,24 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
 import { UsersContext } from "../components/UsersContext";
 
 import { CommentsSection } from "../components/CommentSections";
 import { EventFormModal } from "../modals/EventFormModal";
 import { ConfirmDeleteModal } from "../modals/ConfirmDeleteModal";
 
-/***
- * loader for EventPage
- *  returns {object}
- */
 export const loader = async ({ params }) => {
   const fetchData = async (url) => {
     const response = await fetch(url);
     const data = await response.json();
     return data;
   };
-  const [eventData, categoriesData] = await Promise.all([
-    fetchData(`https://events-data.onrender.com/events/${params.eventId}`),
-    fetchData("https://events-data.onrender.com/categories"),
-  ]);
-  return {
-    eventData,
-    categoriesData,
-  };
-};
 
-/***
- * Event Page
- *
- *  Hooks
- *  - useDisclosure() - for {EventFormModal} and {ConfirmDeleteModal}
- *  - useNavigate() - for refresh after form edit
- *  - userContext() - get users data from {UsersContext}
- *  - useLoaderData() - get event data from loader
- *  - useToast() - display success and error messages
- *  - useOutletContext() - for getting name of cateogry from id
- *
- *  Functions
- *  - submitEdittedForm (eventDetails) - Edits current event with "Patch" Request
- *  - deleteEvent () - Deletes currentEvent with "Delete" request
- */
+  return await fetchData(
+    `https://events-data.onrender.com/events/${params.eventId}`
+  );
+};
 
 export const EventPage = () => {
   const {
@@ -70,32 +46,30 @@ export const EventPage = () => {
   const toast = useToast();
   const { currentUser, allUsers } = useContext(UsersContext);
   const {
-    eventData: {
-      id,
-      title,
-      description,
-      image,
-      location,
-      categoryIds,
-      startTime,
-      endTime,
-      createdBy: createdById,
-      comments = [],
-    },
-    categoriesData,
-  } = useLoaderData();
+    data: { categories },
+    dispatch,
+  } = useOutletContext();
 
-  const formData = {
+  const [formData, setFormData] = useState(useLoaderData);
+  const {
+    id,
     title,
     description,
-    categoryIds,
     image,
     location,
+    categoryIds,
     startTime,
     endTime,
-  };
+    createdBy: createdById,
+    comments = [],
+  } = formData;
 
   const submitEdittedEvent = async (eventDetails) => {
+    dispatch({ type: "event_edited", payload: eventDetails });
+    setFormData((prevData) => ({
+      ...prevData,
+      ...eventDetails,
+    }));
     try {
       const response = await fetch(
         `https://events-data.onrender.com/events/${id}`,
@@ -106,7 +80,6 @@ export const EventPage = () => {
         }
       );
       if (response.ok) {
-        onCloseForm();
         toast({
           title: "Event edited",
           description: `Event "${eventDetails.title}" has been edited.`,
@@ -114,7 +87,6 @@ export const EventPage = () => {
           duration: 4000,
           isClosable: true,
         });
-        navigate(`/event/${id}`);
       } else {
         toast({
           title: "Error",
@@ -124,6 +96,7 @@ export const EventPage = () => {
           isClosable: true,
         });
       }
+      onCloseForm();
     } catch (err) {
       throw Error(err.message);
     }
@@ -170,7 +143,7 @@ export const EventPage = () => {
           <Image src={image} w={"400px"} objectFit="cover" borderRadius={5} />
           <Flex gap={5}>
             {categoryIds.map((id) => {
-              const { name, color } = categoriesData.find(
+              const { name, color } = categories.find(
                 (category) => category.id == id
               );
 
@@ -232,7 +205,7 @@ export const EventPage = () => {
         formData={formData}
         onSubmit={submitEdittedEvent}
         id={id}
-        categories={categoriesData}
+        categories={categories}
         submitButtonText={"Save"}
       />
       <ConfirmDeleteModal

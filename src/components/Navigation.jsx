@@ -6,12 +6,6 @@ import { Center, Image, Text, useDisclosure } from "@chakra-ui/react";
 import { ChangeUserModal } from "../modals/ChangeUserModal";
 import { UsersContext } from "./UsersContext";
 
-/**
- *  Navivation Bar Component
- *  - useDisclosure used for for {changeUserModal}
- *  - useContext used for retrieving users data from {UsersContext}
- */
-
 export const Navigation = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentUser, setCurrentUser, allUsers } = useContext(UsersContext);
@@ -19,16 +13,21 @@ export const Navigation = () => {
   return (
     <header>
       <Center gap={3}>
-        <Image
-          src={currentUser?.image}
-          alt="profile of current user"
-          height={"40px"}
-          width={"40px"}
-          borderRadius={"50%"}
-          objectFit={"cover"}
-          className="icon-hover-grow current-user"
-          onClick={onOpen}
-        />
+        {currentUser.image ? (
+          <Image
+            src={currentUser?.image}
+            alt="profile of current user"
+            height={"40px"}
+            width={"40px"}
+            borderRadius={"50%"}
+            objectFit={"cover"}
+            className="icon-hover-grow current-user"
+            onClick={onOpen}
+          />
+        ) : (
+          <BsPersonCircle fontSize={"40px"} />
+        )}
+
         <Text>{currentUser?.name || "Guest"}</Text>
       </Center>
 
