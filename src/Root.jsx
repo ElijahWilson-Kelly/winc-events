@@ -13,7 +13,6 @@ export const Root = () => {
     events: null,
     categories: null,
   });
-  console.log(data);
 
   useEffect(() => {
     (async function () {

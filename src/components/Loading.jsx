@@ -12,8 +12,8 @@ export const Loading = () => {
         align={"center"}
       >
         <Heading fontWeight={200}>Booting up server</Heading>
-        <Text>This can take some time.</Text>
         <Text>Thank you for your patience.</Text>
+        <Text>This can take up to a minute.</Text>
         <Spinner size="xl" thickness="4px" speed="1s" />
       </Stack>
     </Center>
