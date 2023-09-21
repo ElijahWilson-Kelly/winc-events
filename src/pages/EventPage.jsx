@@ -1,24 +1,47 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import {
   Heading,
   Button,
   Text,
   Image,
+  Box,
   Flex,
   Stack,
   ButtonGroup,
   Grid,
   useDisclosure,
   useToast,
+  Editable,
+  EditablePreview,
+  EditableTextarea,
 } from "@chakra-ui/react";
 import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
-import { UsersContext } from "../components/UsersContext";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-import { CommentsSection } from "../components/CommentSections";
-import { EventFormModal } from "../modals/EventFormModal";
+import { CommentsSection } from "../components/event-page/CommentSections";
 import { ConfirmDeleteModal } from "../modals/ConfirmDeleteModal";
+import { DateSelecterModal } from "../modals/DateSelecterModal";
+import { ImageSelecterModal } from "../modals/ImageSelecterModal";
+
+import { createEvent, editEvent } from "../scripts/middlewareApiCalls";
+import { getDefaultStartTime, getDefaultEndTime } from "../scripts/utils";
+import { EventDetails } from "../components/event-page/EventDetails";
 
 export const loader = async ({ params }) => {
+  // Return New Event
+  if (params.eventId == "new") {
+    return {
+      title: "",
+      description: "",
+      image: "",
+      location: "",
+      categoryIds: [],
+      startTime: "",
+      endTime: "",
+      comments: [],
+      attendedBy: [],
+    };
+  }
   const fetchData = async (url) => {
     const response = await fetch(url);
     const data = await response.json();
@@ -31,58 +54,32 @@ export const loader = async ({ params }) => {
 };
 
 export const EventPage = () => {
-  const {
-    isOpen: isOpenForm,
-    onOpen: onOpenForm,
-    onClose: onCloseForm,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenConfirmDelete,
-    onOpen: onOpenConfirmDelete,
-    onClose: onCloseConfirmDelete,
-  } = useDisclosure();
-
   const navigate = useNavigate();
   const toast = useToast();
-  const { currentUser, allUsers } = useContext(UsersContext);
-  const {
-    data: { categories },
-    dispatch,
-  } = useOutletContext();
+  const { currentUser } = useContext(CurrentUserContext);
+  const eventData = useLoaderData();
 
-  const [formData, setFormData] = useState(useLoaderData);
-  const {
-    id,
-    title,
-    description,
-    image,
-    location,
-    categoryIds,
-    startTime,
-    endTime,
-    createdBy: createdById,
-    comments = [],
-  } = formData;
+  // If new Event add some details to eventData
+  if (!eventData.id) {
+    eventData.createdBy = currentUser.id;
+    eventData.startTime = getDefaultStartTime();
+    eventData.endTime = getDefaultEndTime();
+  }
 
-  const submitEdittedEvent = async (eventDetails) => {
-    dispatch({ type: "event_edited", payload: eventDetails });
-    setFormData((prevData) => ({
-      ...prevData,
-      ...eventDetails,
-    }));
+  const handleSubmit = async () => {
     try {
-      const response = await fetch(
-        `https://events-data.onrender.com/events/${id}`,
-        {
-          headers: { "Content-Type": "application/json" },
-          method: "PATCH",
-          body: JSON.stringify(eventDetails),
-        }
-      );
-      if (response.ok) {
+      let apiCallSuccess;
+      if (id) {
+        apiCallSuccess = await editEvent(formData, dispatchEvents);
+      } else {
+        apiCallSuccess = await createEvent(formData, dispatchEvents);
+      }
+      if (apiCallSuccess) {
         toast({
-          title: "Event edited",
-          description: `Event "${eventDetails.title}" has been edited.`,
+          title: `Event ${id ? "edited" : "created"}.`,
+          description: `Event "${formData.title}" has been ${
+            id ? "edited" : "created"
+          }.`,
           status: "success",
           duration: 4000,
           isClosable: true,
@@ -96,7 +93,6 @@ export const EventPage = () => {
           isClosable: true,
         });
       }
-      onCloseForm();
     } catch (err) {
       throw Error(err.message);
     }
@@ -126,93 +122,18 @@ export const EventPage = () => {
     }
     navigate("/");
   };
-
-  const createdByUser = allUsers.find((user) => user.id === createdById);
-  const [startTimeFormated, endTimeFormated] = [startTime, endTime].map(
-    (time) => new Date(time).toLocaleString("en-GB").slice(0, -3)
-  );
-  const createdByCurrentUser = createdById === currentUser?.id;
-
+  const comments = [];
   return (
     <>
-      <Grid p={30} gap={10} templateColumns={["1fr", null, "1fr 2fr"]}>
-        <Stack gap={2}>
-          <Heading fontWeight={200} fontSize="3rem">
-            {title}
-          </Heading>
-          <Image src={image} w={"400px"} objectFit="cover" borderRadius={5} />
-          <Flex gap={5}>
-            {categoryIds.map((id) => {
-              const { name, color } = categories.find(
-                (category) => category.id == id
-              );
-
-              return (
-                <Text color={color} key={id} fontSize={"1.2rem"}>
-                  {name}
-                </Text>
-              );
-            })}
-          </Flex>
-          <Heading fontWeight={100}>What?</Heading>
-          <Text>{description}</Text>
-          <Heading fontWeight={100}>When?</Heading>
-          <Text>
-            {startTimeFormated} - {endTimeFormated}
-          </Text>
-          <Heading fontWeight={100}>Created By</Heading>
-          <Flex align={"center"} gap={2}>
-            <Text>{createdByUser?.name}</Text>
-            <Image
-              src={createdByUser?.image}
-              boxSize={"50px"}
-              borderRadius={"50%"}
-              className={createdByCurrentUser ? "current-user" : ""}
-            />
-          </Flex>
-
-          <ButtonGroup isDisabled={!createdByCurrentUser}>
-            <Button
-              colorScheme="green"
-              variant="outline"
-              fontWeight={300}
-              w={100}
-              onClick={onOpenForm}
-            >
-              Edit
-            </Button>
-            <Button
-              colorScheme="red"
-              variant="outline"
-              fontWeight={300}
-              w={100}
-              onClick={onOpenConfirmDelete}
-            >
-              Delete
-            </Button>
-          </ButtonGroup>
-          {!createdByCurrentUser ? (
-            <Text color="purple.500">
-              Only the user that created the event can edit and delete event.
-            </Text>
-          ) : undefined}
-        </Stack>
-        <CommentsSection commentsFromServer={comments} eventId={id} />
+      <Grid p={30} gap={10} templateColumns={["1fr", null, null, "1fr 2fr"]}>
+        <EventDetails eventData={eventData} />
+        {eventData.id && (
+          <CommentsSection
+            commentsFromServer={comments}
+            eventId={eventData.id}
+          />
+        )}
       </Grid>
-      <EventFormModal
-        isOpen={isOpenForm}
-        onClose={onCloseForm}
-        formData={formData}
-        onSubmit={submitEdittedEvent}
-        id={id}
-        categories={categories}
-        submitButtonText={"Save"}
-      />
-      <ConfirmDeleteModal
-        isOpen={isOpenConfirmDelete}
-        onClose={onCloseConfirmDelete}
-        deleteEvent={deleteEvent}
-      />
     </>
   );
 };

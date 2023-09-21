@@ -2,12 +2,12 @@ import { useState, useEffect, useContext } from "react";
 import { Form } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Heading, Stack, Textarea, Button, Box } from "@chakra-ui/react";
-import { UsersContext } from "./UsersContext";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { Comment } from "./Comment";
 
-export const CommentsSection = ({ commentsFromServer, eventId }) => {
+export const CommentsSection = ({ commentsFromServer, eventId, users }) => {
   let [comments, setComments] = useState(commentsFromServer);
-  const { currentUser } = useContext(UsersContext);
+  const { currentUser } = useContext(CurrentUserContext);
 
   useEffect(() => {
     (async () => {

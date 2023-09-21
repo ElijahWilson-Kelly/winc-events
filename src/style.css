@@ -13,10 +13,9 @@
   padding: 0;
 }
 
-header {
+.main-header {
   background-color: var(--blue-primary);
   border-bottom: 4px solid var(--blue-dark);
-  box-shadow: 0px 2px 10px var(--blue-light);
   color: white;
   display: flex;
   justify-content: space-between;
@@ -38,34 +37,50 @@ header {
   align-items: center;
 }
 
+.avatar {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  outline: 2px solid white;
+}
+
+.select-user-image {
+  border: 3px solid white;
+}
+
 .current-user {
   border: 3px solid var(--selected-green);
   box-shadow: 0px 0px 20px 1px var(--selected-green);
 }
 
+.change-user-panel {
+  transition: transform 200ms ease-in, opacity 200ms ease-in;
+  grid-area: 1 / 1 / 2 / 2;
+}
+
 .event-card {
   border-radius: 10px;
-  height: 340px;
+  height: 360px;
   width: 100%;
   box-shadow: 0px 0px 4px 1px gray;
   overflow: hidden;
 }
 
-.new-card {
+.placeholder {
   border: none;
   color: rgb(101, 101, 101);
-  font-size: 3.6rem;
   opacity: 0.8;
-}
-
-.new-card:hover {
-  color: white;
-  cursor: pointer;
 }
 
 .icon-hover-grow:hover {
   transform: scale(1.1);
   cursor: pointer;
+}
+
+.editable-event-details {
+  padding: 10px;
+  background-color: #54a1e422 !important;
+  width: 100%;
 }
 
 .delete-btn {

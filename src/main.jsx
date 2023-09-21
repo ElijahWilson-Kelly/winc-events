@@ -5,12 +5,13 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 
-import { UsersContextProvider } from "./components/UsersContext";
+import { CurrentUserContextProvider } from "./contexts/CurrentUserContext";
 import { DefaultErrorBoundary } from "./components/DefaultErrorBoundary";
 import { EventPage, loader as eventPageLoader } from "./pages/EventPage";
 import { EventsPage } from "./pages/EventsPage";
 
 import { Root } from "./Root";
+import { ChangeUserPage } from "./pages/ChangeUserPage";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
         element: <EventPage />,
         loader: eventPageLoader,
       },
+      {
+        path: "/login",
+        element: <ChangeUserPage />,
+      },
     ],
   },
 ]);
@@ -34,9 +39,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ChakraProvider>
-      <UsersContextProvider>
+      <CurrentUserContextProvider>
         <RouterProvider router={router} />
-      </UsersContextProvider>
+      </CurrentUserContextProvider>
     </ChakraProvider>
   </React.StrictMode>
 );

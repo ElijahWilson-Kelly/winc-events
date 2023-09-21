@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import { Flex, Box, Image, Text, Stack } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 
-import { UsersContext } from "./UsersContext";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
-export const Comment = ({ comment, deleteComment }) => {
-  const { currentUser, allUsers } = useContext(UsersContext);
+export const Comment = ({ comment, deleteComment, users }) => {
+  const { currentUser } = useContext(CurrentUserContext);
   const imageSrc =
-    allUsers.find((user) => user.id === comment.commentedBy)?.image || "";
+    users.find((user) => user.id === comment.commentedBy)?.image || "";
   const commentedByCurrentUser = comment.commentedBy === currentUser?.id;
   const styling = {
     p: 4,

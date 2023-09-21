@@ -1,50 +1,60 @@
 import { useContext, useState, useEffect } from "react";
-import {
-  Box,
-  Center,
-  Grid,
-  Heading,
-  Stack,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
-import { Link, useOutletContext } from "react-router-dom";
-import { AiOutlinePlusSquare } from "react-icons/ai";
+import { Box, Heading, Stack, useDisclosure, useToast } from "@chakra-ui/react";
+import { useOutletContext } from "react-router-dom";
 
-import { Categories } from "../components/Categories";
-import { EventCard } from "../components/EventCard";
+import { Categories } from "../components/events-page/Categories";
 import { EventFormModal } from "../modals/EventFormModal";
-import { UsersContext } from "../components/UsersContext";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+
+import { sortEventsByDate } from "../scripts/utils";
+import { EventsSubsection } from "../components/events-page/EventsSubsection";
 
 export const EventsPage = () => {
   const toast = useToast();
-  const { currentUser } = useContext(UsersContext);
+  const { currentUser } = useContext(CurrentUserContext);
 
   const {
-    data: { events, categories },
-    dispatch,
+    data: { events: allEvents, categories },
+    dispatch: { dispatchEvents },
   } = useOutletContext();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [deselectedCategories, setDeselectedCategories] = useState([]);
-  const [filteredEvents, setFilteredEvents] = useState(events);
+
+  const [sortedEvents, setSortedEvents] = useState(() =>
+    sortEventsByDate(allEvents)
+  );
+  const [filteredEvents, setFilteredEvents] = useState(sortedEvents);
 
   useEffect(() => {
-    let newEvents = [];
+    setSortedEvents(() => {
+      return sortEventsByDate(allEvents);
+    });
+  }, [allEvents]);
 
-    for (const event of events) {
-      if (!event.title.toLowerCase().includes(searchTerm.toLowerCase())) {
-        continue;
+  useEffect(() => {
+    const newFilteredEvents = {};
+
+    for (const key in sortedEvents) {
+      const filteredSection = [];
+      for (const event of sortedEvents[key]) {
+        if (!event.title.toLowerCase().includes(searchTerm.toLowerCase()))
+          continue;
+
+        if (event.categoryIds.some((id) => deselectedCategories.includes(id)))
+          continue;
+
+        filteredSection.push(event);
       }
-      if (event.categoryIds.every((id) => deselectedCategories.includes(id))) {
-        continue;
-      }
-      newEvents.push(event);
+      newFilteredEvents[key] = filteredSection;
     }
-    setFilteredEvents(newEvents);
-  }, [searchTerm, deselectedCategories, events]);
+    setFilteredEvents(newFilteredEvents);
+  }, [deselectedCategories, searchTerm, sortedEvents]);
+
+  const { thisWeekEvents, thisMonthEvents, futureEvents, pastEvents } =
+    filteredEvents;
 
   const findNextHighestId = () => {
     let highest = 0;
@@ -109,27 +119,26 @@ export const EventsPage = () => {
             deselectedCategories={deselectedCategories}
             setDeselectedCategories={setDeselectedCategories}
           />
-          <Grid
-            templateColumns={[
-              "repeat(1,1fr)",
-              null,
-              "repeat(2,1fr)",
-              "repeat(3,1fr)",
-              "repeat(4, 1fr)",
-            ]}
-            gap={"15px"}
-          >
-            {filteredEvents.map((event) => {
-              return (
-                <Link to={`event/${event.id}`} key={event.id}>
-                  <EventCard event={event} categories={categories} />
-                </Link>
-              );
-            })}
-            <Center className="event-card new-card" onClick={onOpen}>
-              <AiOutlinePlusSquare />
-            </Center>
-          </Grid>
+          <EventsSubsection
+            heading="This Week"
+            events={thisWeekEvents}
+            categories={categories}
+          />
+          <EventsSubsection
+            heading="This Month"
+            events={thisMonthEvents}
+            categories={categories}
+          />
+          <EventsSubsection
+            heading="Future"
+            events={futureEvents}
+            categories={categories}
+          />
+          <EventsSubsection
+            heading="Past Events"
+            events={pastEvents}
+            categories={categories}
+          />
         </Stack>
       </Box>
       <EventFormModal

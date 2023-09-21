@@ -1,5 +1,5 @@
 import { Text, Stack, Flex, Link } from "@chakra-ui/react";
-import { Cube } from "./Cube";
+import { Cube } from "../Cube";
 
 export const Footer = () => {
   return (

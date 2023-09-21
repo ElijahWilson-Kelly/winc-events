@@ -19,7 +19,9 @@ export const ConfirmDeleteModal = ({ isOpen, onClose, deleteEvent }) => {
         backdropFilter="blur(1px) hue-rotate(10deg)"
       />
       <ModalContent colorScheme="red">
-        <ModalHeader bg="red.800">Confirm Delete</ModalHeader>
+        <ModalHeader bg="red.800" color={"white"}>
+          Delete Event
+        </ModalHeader>
         <ModalCloseButton color="white" border="1px solid white" />
         <ModalBody>
           <Text>Are you sure this cannot be undone!</Text>
