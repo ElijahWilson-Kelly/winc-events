@@ -75,7 +75,7 @@ export const EventCard = ({ event, categories }) => {
           </Flex>
         </Box>
         <Box>
-          <Flex align="center" gap={"4px"} pt={"20px"}>
+          <Flex align="center" gap={"4px"} pt={"5px"}>
             <Link to={`/event/${event.id}`}>
               <Button>Event</Button>
             </Link>
@@ -111,25 +111,3 @@ export const EventCard = ({ event, categories }) => {
     </Stack>
   );
 };
-
-// EventCard.propTypes = {
-//   event: PropTypes.exact({
-//     createdBy: PropTypes.number.isRequired,
-//     title: PropTypes.string.isRequired,
-//     description: PropTypes.string.isRequired,
-//     image: PropTypes.string,
-//     categoryIds: PropTypes.arrayOf(PropTypes.number).isRequired,
-//     attendedBy: PropTypes.arrayOf(PropTypes.number).isRequired,
-//     location: PropTypes.string.isRequired,
-//     startTime: PropTypes.string.isRequired,
-//     endTime: PropTypes.string.isRequired,
-//     id: PropTypes.number.isRequired,
-//     comments: PropTypes.arrayOf(
-//       PropTypes.exact({
-//         comment: PropTypes.string.isRequired,
-//         commentedBy: PropTypes.number.isRequired,
-//         id: PropTypes.number.isRequired,
-//       })
-//     ),
-//   }).isRequired,
-// };

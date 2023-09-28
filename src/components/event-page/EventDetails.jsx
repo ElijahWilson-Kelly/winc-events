@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
@@ -9,9 +9,6 @@ import {
   Box,
   Stack,
   Flex,
-  Editable,
-  EditablePreview,
-  EditableTextarea,
   ButtonGroup,
   Button,
   useDisclosure,
@@ -21,10 +18,17 @@ import { BsCalendar2DateFill } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 
-import { ImageSelecterModal } from "../../modals/ImageSelecterModal";
-import { CategoriesSelecterModal } from "../../modals/CategoriesSelecterModal";
-import { DateSelecterModal } from "../../modals/DateSelecterModal";
 import { ConfirmDeleteModal } from "../../modals/ConfirmDeleteModal";
+import { EditableEventText } from "./EditableEventText";
+import {
+  EditEventBaseModal,
+  ImageSelecterModalBody,
+  DateSelecterModalBody,
+  CategoriesSelecterModalBody,
+} from "../../modals/EditEventBaseModal";
+import { useToastDispatch } from "../../hooks/useToastDispatch";
+
+import { editEvent, createEvent } from "../../scripts/middlewareApiCalls";
 
 export const EventDetails = ({ eventData }) => {
   const { currentUser } = useContext(CurrentUserContext);
@@ -33,24 +37,25 @@ export const EventDetails = ({ eventData }) => {
     dispatch: { dispatchEvents },
   } = useOutletContext();
 
-  const {
-    isOpen: isOpenImageSelecter,
-    onOpen: onOpenImageSelecter,
-    onClose: onCloseImageSelecter,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenDateSelecter,
-    onOpen: onOpenDateSelecter,
-    onClose: onCloseDateSelecter,
-  } = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const {
     isOpen: isOpenConfirmDelete,
     onOpen: onOpenConfirmDelete,
     onClose: onCloseConfirmDelete,
   } = useDisclosure();
 
+  const toastDispatch = useToastDispatch();
+
   const [formData, setFormData] = useState(eventData); // Holds state for changes to event
-  const [editing, setEditing] = useState(formData.id ? false : true);
+  const [editing, setEditing] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
+
+  useEffect(() => {
+    setFormData(eventData);
+  }, [eventData]);
+  useEffect(() => {
+    setEditing(formData.id ? false : true);
+  }, [formData.id]);
 
   const {
     id,
@@ -65,34 +70,45 @@ export const EventDetails = ({ eventData }) => {
   } = formData;
 
   const createdByUser = users.find((user) => user.id === createdById);
-  const [startTimeFormated, endTimeFormated] = [
-    formData.startTime,
-    formData.endTime,
-  ].map((time) => new Date(time).toLocaleString("en-GB").slice(0, -3));
+  const [startTimeFormated, endTimeFormated] = [startTime, endTime].map(
+    (time) => new Date(time).toLocaleString("en-GB").slice(0, -3)
+  );
   const createdByCurrentUser = createdById === currentUser?.id;
 
-  const deleteEvent = function () {};
+  const deleteEvent = () => {};
+
+  const saveEvent = async () => {
+    if (id) {
+      const success = await editEvent(formData, dispatchEvents);
+      if (success) {
+        toastDispatch({ type: "event_edited", payload: formData.title });
+      }
+    } else {
+      const success = await createEvent(formData, dispatchEvents);
+    }
+  };
+
+  // Change form data for given key to given value. Only if value is not dependant on previous value
+  const changeFormData = (value, key) => {
+    setFormData((previousData) => ({
+      ...previousData,
+      [key]: value,
+    }));
+  };
 
   return (
     <>
       <Stack gap={2}>
-        <Editable
-          fontWeight={200}
-          fontSize="3rem"
-          defaultValue={title}
-          selectAllOnFocus={false}
-          placeholder="Title"
-          isDisabled={!editing}
-          onChange={(input) =>
-            setFormData((prevData) => ({
-              ...prevData,
-              title: input,
-            }))
-          }
-        >
-          <EditablePreview className={editing && "editable-event-details"} />
-          <EditableTextarea p={"5px"} />
-        </Editable>
+        <EditableEventText
+          editing={editing}
+          value={title}
+          placeholder={"Title"}
+          styles={{
+            fontSize: "3rem",
+            fontWeight: 200,
+          }}
+          onChange={(value) => changeFormData(value, "title")}
+        />
         <Box
           position="relative"
           w={"400px"}
@@ -116,7 +132,14 @@ export const EventDetails = ({ eventData }) => {
             borderRadius={10}
             className="icon-hover-grow"
           >
-            <FiEdit color="white" fontSize={"2rem"} />
+            <FiEdit
+              color="white"
+              fontSize={"2rem"}
+              onClick={() => {
+                setModalContent(<ImageSelecterModalBody />);
+                onOpen();
+              }}
+            />
           </Box>
         </Box>
 
@@ -138,25 +161,24 @@ export const EventDetails = ({ eventData }) => {
               color="green"
               className="icon-hover-grow"
               fontSize="1.3rem"
+              onClick={() => {
+                onOpen();
+                setModalContent(
+                  <CategoriesSelecterModalBody categories={categories} />
+                );
+              }}
             />
           </Box>
         </Flex>
+
         <Heading fontWeight={100}>What?</Heading>
-        <Editable
-          defaultValue={description}
-          isDisabled={!editing}
-          selectAllOnFocus={false}
-          placeholder="description"
-          onChange={(input) =>
-            setFormData((prevData) => ({
-              ...prevData,
-              description: input,
-            }))
-          }
-        >
-          <EditablePreview className={editing && "editable-event-details"} />
-          <EditableTextarea p={"5px"} />
-        </Editable>
+        <EditableEventText
+          editing={editing}
+          value={description}
+          placeholder={"Description"}
+          onChange={(value) => changeFormData(value, "description")}
+        />
+
         <Heading fontWeight={100}>When?</Heading>
         <Flex gap={"5px"}>
           <Text>
@@ -167,12 +189,21 @@ export const EventDetails = ({ eventData }) => {
               color="lightgreen"
               fontSize="1.6rem"
               className="icon-hover-grow"
-              onClick={onOpenDateSelecter}
+              onClick={() => {
+                onOpen();
+                setModalContent(<DateSelecterModalBody />);
+              }}
             />
           )}
         </Flex>
-        <Heading fontWeight={100}>Where?</Heading>
 
+        <Heading fontWeight={100}>Where?</Heading>
+        <EditableEventText
+          editing={editing}
+          value={location}
+          placeholder={"Location"}
+          onChange={(value) => changeFormData(value, "location")}
+        />
         <Heading fontWeight={100}>Created By</Heading>
         <Flex align={"center"} gap={2}>
           <Text>{createdByUser?.name}</Text>
@@ -192,7 +223,7 @@ export const EventDetails = ({ eventData }) => {
               w={100}
               onClick={() => {
                 setEditing(false);
-                handleSubmit();
+                saveEvent();
               }}
             >
               Save
@@ -227,19 +258,15 @@ export const EventDetails = ({ eventData }) => {
           </Text>
         ) : undefined}
       </Stack>
-      <ImageSelecterModal
-        isOpen={isOpenImageSelecter}
-        onClose={onCloseImageSelecter}
-        originalURL={formData.image}
+
+      <EditEventBaseModal
+        isOpen={isOpen}
+        onClose={onClose}
+        formData={formData}
         setFormData={setFormData}
+        body={modalContent}
       />
-      <DateSelecterModal
-        isOpen={isOpenDateSelecter}
-        onClose={onCloseDateSelecter}
-        originalStartTime={formData.startTime}
-        originalEndTime={formData.endTime}
-        setFormData={setFormData}
-      />
+
       <ConfirmDeleteModal
         isOpen={isOpenConfirmDelete}
         onClose={onCloseConfirmDelete}

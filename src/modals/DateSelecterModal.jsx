@@ -43,9 +43,9 @@ export const DateSelecterModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="scale" isCentered>
-      <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(1px)" />
+      <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(1px)" />
       <ModalContent>
-        <ModalHeader bg="green.900" color={"white"}>
+        <ModalHeader bg="green.500" color={"white"}>
           Date
         </ModalHeader>
         <ModalCloseButton color={"white"} border="1px solid white" />

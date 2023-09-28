@@ -11,7 +11,6 @@ const HEADERS = {
  */
 
 // Events
-
 export const addAttendanceOnEvent = async (userId, eventId, dispatch) => {
   dispatch({ type: "attendance_added", payload: { userId, eventId } });
   try {
@@ -36,7 +35,7 @@ export const addAttendanceOnEvent = async (userId, eventId, dispatch) => {
 };
 
 export const removeAttendanceOnEvent = async (userId, eventId, dispatch) => {
-  dispatch({ type: "attendance_removed", payload: { userId, eventId } }); // Update State for quicker repsone time
+  dispatch({ type: "attendance_removed", payload: { userId, eventId } }); // Update State for quicker repsonse time
   try {
     // Get attendees from database
     let response = await fetch(`${BASEURLEVENTS}/${eventId}`);
@@ -101,20 +100,3 @@ export const deleteEvent = async (event, dispatch) => {
     method: "DELETE",
   });
 };
-
-const body = {
-  id: 5,
-  createdBy: 1,
-  title: "Meeting",
-  description: "Meeting to discuss upcoming projects",
-  image:
-    "https://img.freepik.com/free-photo/people-business-meeting-high-angle_23-2148911819.jpg",
-  location: "The Office",
-  categoryIds: [],
-  startTime: "2023-09-25T10:30",
-  endTime: "2023-09-25T16:30",
-  comments: [],
-  attendedBy: [],
-};
-
-editEvent(body, () => {});

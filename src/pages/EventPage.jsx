@@ -1,27 +1,9 @@
-import { useContext, useState } from "react";
-import {
-  Heading,
-  Button,
-  Text,
-  Image,
-  Box,
-  Flex,
-  Stack,
-  ButtonGroup,
-  Grid,
-  useDisclosure,
-  useToast,
-  Editable,
-  EditablePreview,
-  EditableTextarea,
-} from "@chakra-ui/react";
-import { useLoaderData, useNavigate, useOutletContext } from "react-router-dom";
+import { useContext } from "react";
+import { Grid, useToast } from "@chakra-ui/react";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 import { CommentsSection } from "../components/event-page/CommentSections";
-import { ConfirmDeleteModal } from "../modals/ConfirmDeleteModal";
-import { DateSelecterModal } from "../modals/DateSelecterModal";
-import { ImageSelecterModal } from "../modals/ImageSelecterModal";
 
 import { createEvent, editEvent } from "../scripts/middlewareApiCalls";
 import { getDefaultStartTime, getDefaultEndTime } from "../scripts/utils";

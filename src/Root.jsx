@@ -28,7 +28,7 @@ export const Root = () => {
   const { setCurrentUser } = useContext(CurrentUserContext);
   useEffect(() => {
     setCurrentUser(users[0]);
-  }, users);
+  }, [users.length]);
 
   useEffect(() => {
     (async function () {

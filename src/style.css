@@ -78,9 +78,21 @@
 }
 
 .editable-event-details {
-  padding: 10px;
-  background-color: #54a1e422 !important;
+  background-color: #bcd9e288 !important;
+  padding: 5px;
+}
+
+.editable-text {
   width: 100%;
+  height: auto;
+  resize: none;
+  background-color: #6f6fdb22;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.editable-text:focus {
+  outline: 2px solid rgb(113, 113, 243);
 }
 
 .delete-btn {

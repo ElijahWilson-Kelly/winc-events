@@ -16,6 +16,7 @@ export const EventsSubsection = ({ heading, events, categories }) => {
           "repeat(3,1fr)",
           "repeat(4, 1fr)",
         ]}
+        opacity={heading == "Past Events" && 0.6}
         gap={"15px"}
       >
         {events.map((event) => {
